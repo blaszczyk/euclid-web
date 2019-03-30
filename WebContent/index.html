@@ -2,7 +2,27 @@
   <head>
     <title>Euclidean Geometry</title>
   </head>
+  <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
+  <script type='text/javascript' src='js/euclid.js'></script>
   <body>
-    <h1>Hello Euclid</h1>
+    <h1>Solve Problems in Euclidean Geometry</h1>
+    <div>
+      <div id="result" style="float:left;">
+	  <svg width="800" height="800"/>
+      </div>
+      <div align="left" style="float:left;">
+        variable definitions: <br/>
+        <textarea id="variables" rows="20" cols="60"></textarea>
+        <br/>
+        initial: <input id="initial" type="text"/>
+        <br/>
+        required: <input id="required" type="text"/>
+        <br/>
+        depth: <input id="depth" type="text"/>
+        <br/>
+        <input value="construct" type="button" onclick="construct();"/>
+        <input value="visualize" type="button" onclick="visualize();"/>
+      </div>
+    </div>
   </body>
 </html>

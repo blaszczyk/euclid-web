@@ -6,18 +6,16 @@ public class BoardDto {
 	
 	private List<PointDto> points;
 	
-	private List<LineDto> lines;
-	
-	private List<CircleDto> circles;
+	private List<CurveDto> curves;
 	
 	public BoardDto() {
 	}
 
-	public BoardDto(List<PointDto> points, List<LineDto> lines, List<CircleDto> circles) {
+	public BoardDto(List<PointDto> points, List<CurveDto> curves) {
 		this.points = points;
-		this.lines = lines;
-		this.circles = circles;
+		this.curves = curves;
 	}
+
 
 	public List<PointDto> getPoints() {
 		return points;
@@ -27,20 +25,12 @@ public class BoardDto {
 		this.points = points;
 	}
 
-	public List<LineDto> getLines() {
-		return lines;
+	public List<CurveDto> getCurves() {
+		return curves;
 	}
 
-	public void setLines(List<LineDto> lines) {
-		this.lines = lines;
-	}
-
-	public List<CircleDto> getCircles() {
-		return circles;
-	}
-
-	public void setCircles(List<CircleDto> circles) {
-		this.circles = circles;
+	public void setCurves(List<CurveDto> curves) {
+		this.curves = curves;
 	}
 
 }

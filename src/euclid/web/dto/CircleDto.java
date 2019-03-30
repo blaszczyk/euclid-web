@@ -1,17 +1,20 @@
 package euclid.web.dto;
 
-public class CircleDto {
+public class CircleDto extends CurveDto {
 	
 	private PointDto center;
 	private String radius;
 	
 	public CircleDto() {
+		super("circle");
 	}
 	
 	public CircleDto(PointDto center, String radius) {
+		this();
 		this.center = center;
 		this.radius = radius;
 	}
+	
 	public PointDto getCenter() {
 		return center;
 	}

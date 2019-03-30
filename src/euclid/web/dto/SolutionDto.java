@@ -4,15 +4,15 @@ public class SolutionDto {
 	
 	private BoardDto initial;
 	private BoardDto required;
-	private BoardDto solution;
+	private BoardDto construction;
 	
 	public SolutionDto() {
 	}
 	
-	public SolutionDto(BoardDto initial, BoardDto required, BoardDto solution) {
+	public SolutionDto(BoardDto initial, BoardDto required, BoardDto construction) {
 		this.initial = initial;
 		this.required = required;
-		this.solution = solution;
+		this.construction = construction;
 	}
 
 	public BoardDto getInitial() {
@@ -31,12 +31,12 @@ public class SolutionDto {
 		this.required = required;
 	}
 
-	public BoardDto getSolution() {
-		return solution;
+	public BoardDto getConstruction() {
+		return construction;
 	}
 
-	public void setSolution(BoardDto solution) {
-		this.solution = solution;
+	public void setConstruction(BoardDto solution) {
+		this.construction = solution;
 	}
 	
 }

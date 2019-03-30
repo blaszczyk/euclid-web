@@ -1,14 +1,51 @@
+var solution;
+var step=0;
+var jobId;
 
 function construct() {
   $.ajax({
 	type:'POST',
 	url:'rest/solve',
-    Accept : 'application/json',
     contentType: 'application/json',
 	data: JSON.stringify(problem()),
+	success: jId => {
+		jobId = jId;
+		setTimeout(pollSolution,1000);
+	},
+	error: e => {
+	  console.log(e);
+	}
+  });
+};
+
+function pollSolution() {
+  $.ajax({
+	type:'GET',
+	url:'rest/solve/'+jobId,
+    Accept : 'application/json',
 	dataType: 'json',
-	success: solution => {
-		draw(solution);
+	success: s => {
+		if(s) {
+			solution=s;
+			step=s.construction.curves.length;
+			draw();
+		}
+		else {
+			setTimeout(pollSolution,1000);
+		}
+	},
+	error: e => {
+	  console.log(e);
+	}
+  });
+};
+
+function halt() {
+  $.ajax({
+	type:'DELETE',
+	url:'rest/solve/'+jobId,
+	success: s => {
+		// ...
 	},
 	error: e => {
 	  console.log(e);
@@ -24,14 +61,29 @@ function visualize() {
     contentType: 'application/json',
 	data: JSON.stringify(problem()),
 	dataType: 'json',
-	success: solution => {
-		draw(solution);
+	success: s => {
+		solution=s;
+		draw();
 	},
 	error: e => {
 	  console.log(e);
 	}
   });
 };
+
+function prev() {
+  if(step>0) {
+	  step--;
+	  draw();
+  }
+}
+
+function next() {
+  if(step<solution.construction.curves.length) {
+	  step++;
+	  draw();
+  }
+}
 
 function problem() {
 	return{
@@ -46,20 +98,23 @@ var width = 800;
 var height = 800;
 var scale = 100;
 
-function draw(solution) {
+function draw() {
   svg = '<svg width="'+width+'" height="'+height+'">'
-  svg += board(solution.solution,'lightgray');
+  svg += board(solution.construction,'lightgray',step);
   svg += board(solution.required,'red');
   svg += board(solution.initial,'green');
   svg += '</svg>';
   $('#result').html(svg)
 };
 
-function board(b, color) {
+function board(b, color, nrcurves) {
+	if(!nrcurves) nrcurves = b.curves.length;
 	r='';
 	b.points.forEach( p => r+=point(p, color));
-    b.lines.forEach( l => r+=line(l, color));
-	b.circles.forEach( c => r+=circle(c, color));
+    b.curves.slice(0,nrcurves).forEach( c => {
+    	if(c.type==="line") { r+=line(c, color); }
+        if(c.type==="circle") { r+=circle(c, color); }
+    });
 	return r;
 }
 

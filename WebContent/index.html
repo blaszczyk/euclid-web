@@ -8,7 +8,7 @@
     <h1>Solve Problems in Euclidean Geometry</h1>
     <div>
       <div id="result" style="float:left;">
-	  <svg width="800" height="800"/>
+	  <svg width="800" height="800"></svg>
       </div>
       <div align="left" style="float:left;">
         variable definitions: <br/>
@@ -20,8 +20,11 @@
         <br/>
         depth: <input id="depth" type="text"/>
         <br/>
-        <input value="construct" type="button" onclick="construct();"/>
         <input value="visualize" type="button" onclick="visualize();"/>
+        <input value="construct" type="button" onclick="construct();"/>
+        <input value="halt" type="button" onclick="halt();"/>
+        <input id="prev" value="<" type="button" style="width:15pt;" onclick="prev();"/>
+        <input id="next" value=">" type="button" style="width:15pt;" onclick="next();"/>
       </div>
     </div>
   </body>

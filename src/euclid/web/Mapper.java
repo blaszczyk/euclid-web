@@ -5,58 +5,60 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import euclid.model.*;
 import euclid.problem.Problem;
 import euclid.problem.ProblemParser;
 import euclid.web.dto.*;
 
-abstract class AbstractEndpoint {
+public class Mapper {
 	
-	final Algebra algebra;
+	@Inject
+	private AlgebraHold algebra;
 
-	AbstractEndpoint(Algebra algebra) {
-		this.algebra = algebra;
+	public SolutionDto map(Problem problem) {
+		return map(problem, Board.EMPTY);
 	}
 
-	SolutionDto map(Problem problem, Board solution) {
+	public SolutionDto map(Problem problem, Board solution) {
 		return new SolutionDto(map(problem.initial()), map(problem.required().iterator().next()), map(solution));
 	}
 
-	BoardDto map(Board board) {
+	public BoardDto map(Board board) {
 		final List<PointDto> points = new ArrayList<>();
-		final List<LineDto> lines = new ArrayList<>();
-		final List<CircleDto> circles = new ArrayList<>();
+		final List<CurveDto> curves = new ArrayList<>();
 		for(final Point point : board.points()) {
 			points.add(map(point));
 		}
 		for(final Curve curve : board.curves()) {
 			if(curve.isLine()) {
-				lines.add(map(curve.asLine()));
+				curves.add(map(curve.asLine()));
 			}
 			else {
-				circles.add(map(curve.asCircle()));
+				curves.add(map(curve.asCircle()));
 			}
 		}
-		return new BoardDto(points, lines, circles);
+		return new BoardDto(points, curves);
 	}
 
-	PointDto map(final Point point) {
+	public PointDto map(final Point point) {
 		return new PointDto(map(point.x()), map(point.y()));
 	}
 
-	LineDto map(final Line line) {
+	public LineDto map(final Line line) {
 		return new LineDto(map(line.normal()), map(line.offset()));
 	}
 
-	CircleDto map(final Circle circle) {
+	public CircleDto map(final Circle circle) {
 		return new CircleDto(map(circle.center()), map(circle.radiusSquare().root()));
 	}
 	
-	String map(final Constructable number) {
+	public String map(final Constructable number) {
 		return new DecimalFormat("#.######").format(number.doubleValue());
 	}
 
-	Problem map(final ProblemDto problemDto) {
+	public Problem map(final ProblemDto problemDto) {
 		final List<String> lines = new ArrayList<>();
 		lines.addAll(Arrays.asList(problemDto.getVariables().split("\\r?\\n")));
 		lines.add("initial=" + problemDto.getInitial());
@@ -64,8 +66,6 @@ abstract class AbstractEndpoint {
 		lines.add("maxdepth=" + problemDto.getDepth());
 		lines.add("findall=false");
 		lines.add("algorithm=curve_based");
-		return new ProblemParser(algebra, lines).parse();
+		return new ProblemParser(algebra.get(), lines).parse();
 	}
-	
-	
 }

@@ -1,13 +1,15 @@
 package euclid.web.dto;
 
-public class LineDto {
+public class LineDto extends CurveDto {
 	private PointDto normal;
 	private String offset;
 	
 	public LineDto() {
+		super("line");
 	}
 	
 	public LineDto(PointDto normal, String offset) {
+		this();
 		this.normal = normal;
 		this.offset = offset;
 	}

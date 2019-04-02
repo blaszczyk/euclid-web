@@ -5,27 +5,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
-
 import euclid.model.*;
 import euclid.problem.Problem;
 import euclid.problem.ProblemParser;
 import euclid.web.dto.*;
 
 public class Mapper {
-	
-	@Inject
-	private AlgebraHold algebra;
 
-	public SolutionDto map(Problem problem) {
+	public SolutionDto map(final Problem problem) {
 		return map(problem, Board.EMPTY);
 	}
 
-	public SolutionDto map(Problem problem, Board solution) {
+	public SolutionDto map(final Problem problem, final Board solution) {
 		return new SolutionDto(map(problem.initial()), map(problem.required().iterator().next()), map(solution));
 	}
 
-	public BoardDto map(Board board) {
+	public BoardDto map(final Board board) {
 		final List<PointDto> points = new ArrayList<>();
 		final List<CurveDto> curves = new ArrayList<>();
 		for(final Point point : board.points()) {
@@ -58,7 +53,7 @@ public class Mapper {
 		return new DecimalFormat("#.######").format(number.doubleValue());
 	}
 
-	public Problem map(final ProblemDto problemDto) {
+	public List<String> map(final ProblemDto problemDto) {
 		final List<String> lines = new ArrayList<>();
 		lines.addAll(Arrays.asList(problemDto.getVariables().split("\\r?\\n")));
 		lines.add("initial=" + problemDto.getInitial());
@@ -66,6 +61,38 @@ public class Mapper {
 		lines.add("maxdepth=" + problemDto.getDepth());
 		lines.add("findall=false");
 		lines.add("algorithm=curve_based");
-		return new ProblemParser(algebra.get(), lines).parse();
+		return lines;
+	}
+
+	public ProblemDto map(final List<String> lines) {
+		final StringBuilder variables = new StringBuilder();
+		String initial = "";
+		String required = "";
+		int depth = 0;
+		for(final String line : lines) {
+			boolean isReservedKeyword = false;
+			if(line.contains("=")) {
+				isReservedKeyword = true;
+				final String[] split = line.split("\\=", 2);
+				final String key = split[0].replaceAll("\\s", "").toLowerCase();
+				final String value = split[1];
+				if(key.equals(ProblemParser.KEY_INITIAL)) {
+					initial = value;
+				}
+				else if(key.equals(ProblemParser.KEY_REQUIRED)) {
+					required = value;
+				}
+				else if(key.equals(ProblemParser.KEY_MAX_DEPTH)) {
+					depth = Integer.parseInt(value.trim());
+				}
+				else if(!key.equals(ProblemParser.KEY_ALGORITHM) && !key.equals(ProblemParser.KEY_FIND_ALL) ){
+					isReservedKeyword = false;
+				}
+			}
+			if(!isReservedKeyword) {
+				variables.append(line).append("\r\n");
+			}
+		}
+		return new ProblemDto(variables.toString(), initial, required, depth);
 	}
 }

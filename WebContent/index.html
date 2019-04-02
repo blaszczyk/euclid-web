@@ -3,7 +3,8 @@
     <title>Euclidean Geometry</title>
   </head>
   <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
-  <script type='text/javascript' src='js/euclid.js'></script>
+  <script type='text/javascript' src='js/svg.js'></script>
+  <script type='text/javascript' src='js/ajax.js'></script>
   <body>
     <h1>Solve Problems in Euclidean Geometry</h1>
     <div>
@@ -11,6 +12,12 @@
 	  <svg width="800" height="800"></svg>
       </div>
       <div align="left" style="float:left;">
+        <select id="list"></select>
+        <input id="load" value="load" type="button" onclick="load();"/>
+        <br/>
+        <input id="name" type="text"></input>
+        <input id="save" value="save" type="button" onclick="save();"/>
+        <br/>
         variable definitions: <br/>
         <textarea id="variables" rows="20" cols="60"></textarea>
         <br/>
@@ -20,7 +27,7 @@
         <br/>
         depth: <input id="depth" type="text"/>
         <br/>
-        <input value="visualize" type="button" onclick="visualize();"/>
+        <input value="preview" type="button" onclick="preview();"/>
         <input value="construct" type="button" onclick="construct();"/>
         <input value="halt" type="button" onclick="halt();"/>
         <input id="prev" value="<" type="button" style="width:15pt;" onclick="prev();"/>

@@ -6,6 +6,19 @@ public class ProblemDto {
 	private String initial;
 	private String required;
 	private int depth;
+	
+	public ProblemDto() {
+	}
+	
+	
+	public ProblemDto(final String variables, final String initial, final String required, final int depth) {
+		this.variables = variables;
+		this.initial = initial;
+		this.required = required;
+		this.depth = depth;
+	}
+
+
 	public String getVariables() {
 		return variables;
 	}

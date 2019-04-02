@@ -1,80 +1,11 @@
 var solution;
 var step=0;
-var jobId;
-
-function construct() {
-  $.ajax({
-	type:'POST',
-	url:'rest/solve',
-    contentType: 'application/json',
-	data: JSON.stringify(problem()),
-	success: jId => {
-		jobId = jId;
-		setTimeout(pollSolution,1000);
-	},
-	error: e => {
-	  console.log(e);
-	}
-  });
-};
-
-function pollSolution() {
-  $.ajax({
-	type:'GET',
-	url:'rest/solve/'+jobId,
-    Accept : 'application/json',
-	dataType: 'json',
-	success: s => {
-		if(s) {
-			solution=s;
-			step=s.construction.curves.length;
-			draw();
-		}
-		else {
-			setTimeout(pollSolution,1000);
-		}
-	},
-	error: e => {
-	  console.log(e);
-	}
-  });
-};
-
-function halt() {
-  $.ajax({
-	type:'DELETE',
-	url:'rest/solve/'+jobId,
-	success: s => {
-		// ...
-	},
-	error: e => {
-	  console.log(e);
-	}
-  });
-};
-
-function visualize() {
-  $.ajax({
-	type:'POST',
-	url:'rest/problem',
-    Accept : 'application/json',
-    contentType: 'application/json',
-	data: JSON.stringify(problem()),
-	dataType: 'json',
-	success: s => {
-		solution=s;
-		draw();
-	},
-	error: e => {
-	  console.log(e);
-	}
-  });
-};
 
 function prev() {
   if(step>0) {
 	  step--;
 	  draw();
+	  enableButtons()
   }
 }
 
@@ -82,17 +13,9 @@ function next() {
   if(step<solution.construction.curves.length) {
 	  step++;
 	  draw();
+	  enableButtons()
   }
 }
-
-function problem() {
-	return{
-      initial : $('#initial')[0].value,
-      required : $('#required')[0].value,
-      variables : $('#variables')[0].value,
-      depth : $('#depth')[0].value
-    };
-};
 
 var width = 800;
 var height = 800;

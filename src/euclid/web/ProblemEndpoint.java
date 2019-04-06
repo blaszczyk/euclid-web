@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -26,7 +29,14 @@ import euclid.web.dto.*;
 @Path("/problem")
 public class ProblemEndpoint extends AbstractEndpoint {
 
-	private final File problemsRootDir = new File(System.getenv("LOCALAPPDATA"), "euclid/problems");
+	@Inject()
+	@Named("root-dir")
+	private File rootDir;
+	
+	@PostConstruct
+	public void mkProblemsDir() {
+		problemsDir().mkdirs();
+	}
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -41,7 +51,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response list(@QueryParam("search") final String searchTerm) {
-		final List<String> files = Arrays.stream(problemsRootDir.list())
+		final List<String> files = Arrays.stream(problemsDir().list())
 				.filter(f -> f.endsWith(".euclid"))
 				.map(f -> f.substring(0, f.lastIndexOf('.')))
 				.filter(f -> searchTerm == null || f.contains(searchTerm))
@@ -87,9 +97,12 @@ public class ProblemEndpoint extends AbstractEndpoint {
 		return ok();
 	}
 
+	private File problemsDir() {
+		return new File(rootDir, "problems");
+	}
+
 	private File file(final String name) {
-		problemsRootDir.mkdirs();
-		return new File(problemsRootDir, name + ".euclid");
+		return new File(problemsDir(), name + ".euclid");
 	}
 
 }

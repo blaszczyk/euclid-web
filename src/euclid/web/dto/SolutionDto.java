@@ -1,15 +1,17 @@
 package euclid.web.dto;
 
+import java.util.List;
+
 public class SolutionDto {
 	
 	private BoardDto initial;
 	private BoardDto required;
-	private BoardDto construction;
+	private List<BoardDto> construction;
 	
 	public SolutionDto() {
 	}
 	
-	public SolutionDto(BoardDto initial, BoardDto required, BoardDto construction) {
+	public SolutionDto(BoardDto initial, BoardDto required, List<BoardDto> construction) {
 		this.initial = initial;
 		this.required = required;
 		this.construction = construction;
@@ -31,11 +33,11 @@ public class SolutionDto {
 		this.required = required;
 	}
 
-	public BoardDto getConstruction() {
+	public List<BoardDto> getConstruction() {
 		return construction;
 	}
 
-	public void setConstruction(BoardDto solution) {
+	public void setConstruction(List<BoardDto> solution) {
 		this.construction = solution;
 	}
 	

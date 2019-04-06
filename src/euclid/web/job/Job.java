@@ -1,6 +1,6 @@
 package euclid.web.job;
 
-import euclid.alg.engine.ThreadedSearchEngine;
+import euclid.engine.SearchEngine;
 import euclid.kpi.KpiMonitor;
 import euclid.model.Board;
 import euclid.problem.Problem;
@@ -9,11 +9,11 @@ public class Job {
 	
 	private final Problem problem;
 	
-	private final ThreadedSearchEngine<Board> engine;
+	private final SearchEngine<Board> engine;
 	
 	private final KpiMonitor monitor;
 
-	Job(Problem problem, ThreadedSearchEngine<Board> engine, KpiMonitor monitor) {
+	Job(Problem problem, SearchEngine<Board> engine, KpiMonitor monitor) {
 		this.problem = problem;
 		this.engine = engine;
 		this.monitor = monitor;
@@ -23,7 +23,7 @@ public class Job {
 		return problem;
 	}
 
-	public ThreadedSearchEngine<Board> getEngine() {
+	public SearchEngine<Board> getEngine() {
 		return engine;
 	}
 	

@@ -8,9 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import euclid.alg.Algorithm;
-import euclid.alg.CurveBasedSearch;
-import euclid.alg.engine.ThreadedSearchEngine;
+import euclid.algorithm.Algorithm;
+import euclid.algorithm.CurveBasedSearch;
+import euclid.engine.EngineParameters;
+import euclid.engine.SearchEngine;
 import euclid.kpi.KpiCsvWriter;
 import euclid.kpi.KpiMonitor;
 import euclid.model.Algebra;
@@ -29,16 +30,17 @@ public class JobManager {
 	private final Map<String, Job> jobs = new ConcurrentHashMap<>();
 
 	public String createAndStartJob(final Problem problem) {
-		final Algorithm<Board> algorithm = new CurveBasedSearch(problem.initial(), problem.required(), algebra);
+		final Algorithm<Board> algorithm = new CurveBasedSearch(problem, algebra);
 		final int threadCount = Runtime.getRuntime().availableProcessors();
-		final ThreadedSearchEngine<Board> engine = new ThreadedSearchEngine<>(algorithm, problem.maxDepth(), 
-				false, threadCount);
+		final String jobId = String.format("%08X", algorithm.hashCode());
+		final EngineParameters parameters = new EngineParameters(jobId, false, threadCount);
+		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters);
+		
 		final KpiMonitor monitor = new KpiMonitor(5000);
 		engine.kpiReporters().forEach(monitor::addReporter);
 		monitor.addConsumer(new KpiCsvWriter(new File(rootDir, "log")));
 
 		final Job job = new Job(problem, engine, monitor);
-		final String jobId = String.format("%08X", job.hashCode());
 		jobs.put(jobId, job);
 		monitor.start();
 		engine.start(true);

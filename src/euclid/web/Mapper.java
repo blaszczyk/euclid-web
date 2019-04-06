@@ -3,6 +3,7 @@ package euclid.web;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import euclid.model.*;
@@ -16,8 +17,19 @@ public class Mapper {
 		return map(problem, Board.EMPTY);
 	}
 
-	public SolutionDto map(final Problem problem, final Board solution) {
-		return new SolutionDto(map(problem.initial()), map(problem.required().iterator().next()), map(solution));
+	public SolutionDto map(final Problem problem, final Board construction) {
+		return new SolutionDto(map(problem.initial()), map(problem.required().iterator().next()), mapConstruction(construction));
+	}
+
+	private List<BoardDto> mapConstruction(final Board construction) {
+		final List<BoardDto> list = new ArrayList<>();
+		Board board = construction;
+		while(board != null) {
+			list.add(map(board));
+			board = board.parent();
+		}
+		Collections.reverse(list);
+		return list;
 	}
 
 	public BoardDto map(final Board board) {

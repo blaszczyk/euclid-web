@@ -10,7 +10,7 @@ function prev() {
 }
 
 function next() {
-  if(step<solution.construction.curves.length) {
+  if(step<solution.construction.length) {
 	  step++;
 	  draw();
 	  enableButtons()
@@ -23,18 +23,17 @@ var scale = 100;
 
 function draw() {
   svg = '<svg width="'+width+'" height="'+height+'">'
-  svg += board(solution.construction,'lightgray',step);
+  svg += board(solution.construction[step],'lightgray');
   svg += board(solution.required,'red');
   svg += board(solution.initial,'green');
   svg += '</svg>';
   $('#result').html(svg)
 };
 
-function board(b, color, nrcurves) {
-	if(!nrcurves) nrcurves = b.curves.length;
+function board(b, color) {
 	r='';
 	b.points.forEach( p => r+=point(p, color));
-    b.curves.slice(0,nrcurves).forEach( c => {
+    b.curves.forEach( c => {
     	if(c.type==="line") { r+=line(c, color); }
         if(c.type==="circle") { r+=circle(c, color); }
     });

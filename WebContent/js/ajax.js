@@ -27,7 +27,7 @@ function pollSolution() {
 	success: s => {
 		if(s) {
 			solution=s;
-			step=s.construction.curves.length;
+			step=s.construction.length-1;
 			if(!step) alert('no solution');
 			jobId=null;
 			enableButtons();
@@ -143,7 +143,7 @@ function enableButtons() {
 	  $('#construct').attr('enabled', !jobId);
 	  $('#halt').attr('enabled', !!jobId);
 	  $('#prev').attr('enabled', solution && step > 0);
-	  $('#next').attr('enabled', solution && step < solution.construction.curves.length - 1);
+	  $('#next').attr('enabled', solution && step < solution.construction.length - 1);
 };
 
 $(list);

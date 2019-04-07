@@ -24,7 +24,7 @@ public class BoardMapper {
 			if(problem.initial().points().contains(point)) {
 				return "initial";
 			}
-			if(problem.required().iterator().next().points().contains(point)) {
+			if(problem.required().points().contains(point)) {
 				return "required";
 			}
 			return "";
@@ -33,7 +33,7 @@ public class BoardMapper {
 			if(problem.initial().curves().contains(curve)) {
 				return "initial";
 			}
-			if(problem.required().iterator().next().curves().contains(curve)) {
+			if(problem.required().curves().contains(curve)) {
 				return "required";
 			}
 			return "";
@@ -41,8 +41,8 @@ public class BoardMapper {
 	}
 
 	public List<BoardDto> map() {
-		return map(Board.withPoints(problem.initial().points().adjoin(problem.required().iterator().next().points()))
-				.andCurves(problem.initial().curves().adjoin(problem.required().iterator().next().curves())));
+		return map(Board.withPoints(problem.initial().points().adjoin(problem.required().points()))
+				.andCurves(problem.initial().curves().adjoin(problem.required().curves())));
 	}
 
 	public List<BoardDto> map(final Board construction) {

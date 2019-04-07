@@ -70,7 +70,7 @@ function preview() {
 	dataType: 'json',
 	success: c => {
 		construction=c;
-		step=1;
+		step=0;
 		draw();
 	},
 	error: e => {

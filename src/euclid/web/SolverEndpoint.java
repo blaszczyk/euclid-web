@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import euclid.model.*;
 import euclid.problem.Problem;
+import euclid.problem.ProblemParser;
 import euclid.web.dto.*;
 import euclid.web.job.JobManager;
 
@@ -23,13 +24,16 @@ import euclid.web.job.JobManager;
 public class SolverEndpoint extends AbstractEndpoint {
 
 	@Inject
+	Algebra algebra;
+	
+	@Inject
 	private JobManager jobManager;
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response solve(final ProblemDto problemDto) {
 		final List<String> lines = ProblemMapper.map(problemDto);
-		final Problem problem = parseProblem(lines);
+		final Problem problem =  new ProblemParser(algebra, lines).parse();
 		final String jobId = jobManager.createAndStartJob(problem);
 		return ok(jobId);
 	}

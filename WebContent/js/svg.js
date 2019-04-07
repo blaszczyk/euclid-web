@@ -1,4 +1,4 @@
-var solution;
+var construction;
 var step=0;
 
 function prev() {
@@ -9,7 +9,7 @@ function prev() {
 }
 
 function next() {
-  if(step<solution.length-1) {
+  if(step<construction.length-1) {
 	  step++;
 	  draw();
   }
@@ -21,7 +21,7 @@ var scale = 100;
 
 function draw() {
   svg = '<svg width="'+width+'" height="'+height+'">'
-  svg += board(solution[step]);
+  svg += board(construction[step]);
   svg += '</svg>';
   $('#result').html(svg)
 };

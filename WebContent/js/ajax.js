@@ -13,6 +13,7 @@ function construct() {
 	},
 	error: e => {
 	  console.log(e);
+	  alert(e.responseText);
 	}
   });
 };
@@ -24,14 +25,15 @@ function pollSolution() {
 	url:'rest/solve/'+jobId,
     Accept : 'application/json',
 	dataType: 'json',
-	success: s => {
-		if(s) {
-			solution=s;
-			step=s.length-1;
-			if(!step) alert('no solution');
+	success: c => {
+		if(c) {
+			construction=c;
+			step=c.length-1;
 			jobId=null;
 			enableButtons();
 			draw();
+			if(step<=1)
+				alert('no solution');
 		}
 		else if(jobId != null){
 			setTimeout(pollSolution,1000);
@@ -48,7 +50,7 @@ function halt() {
   $.ajax({
 	type:'DELETE',
 	url:'rest/solve/'+jobId,
-	success: s => {
+	success: () => {
 		jobId=null;
 		enableButtons()
 	},
@@ -66,12 +68,14 @@ function preview() {
     contentType: 'application/json',
 	data: JSON.stringify(problem()),
 	dataType: 'json',
-	success: s => {
-		solution=s;
+	success: c => {
+		construction=c;
+		step=1;
 		draw();
 	},
 	error: e => {
 	  console.log(e);
+	  alert(e.responseText);
 	}
   });
 };
@@ -105,6 +109,7 @@ function load() {
 		$('#initial').attr('value', p.initial);
 		$('#required').attr('value', p.required);
 		$('#depth').attr('value', p.depth);
+		$('#name').attr('value', name);
 	},
 	error: e => {
 	  console.log(e);

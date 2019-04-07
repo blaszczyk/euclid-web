@@ -13,6 +13,7 @@ public class LineDto extends CurveDto {
 		this.normal = normal;
 		this.offset = offset;
 	}
+
 	public PointDto getNormal() {
 		return normal;
 	}

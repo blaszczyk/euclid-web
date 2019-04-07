@@ -81,7 +81,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 		try {
 			final List<String> lines = mapper.map(problemDto);
 			final File file = file(name);
-			Files.write(file.toPath(), lines, StandardOpenOption.CREATE);
+			Files.write(file.toPath(), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 			return ok();
 		}
 		catch (IOException e) {

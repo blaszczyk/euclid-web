@@ -53,11 +53,19 @@ public class Mapper {
 		return new PointDto(map(point.x()), map(point.y()));
 	}
 
-	public LineDto map(final Line line) {
+	public CurveDto map(final Line line) {
+		if(line.isSegment()) {
+			final Segment segment = line.asSegment();
+			final Point basePoint = line.normal().mul(line.offset());
+			final Point tangent = line.normal().orth();
+			final Point from = basePoint.add(tangent.mul(segment.from()));
+			final Point to = basePoint.add(tangent.mul(segment.to()));
+			return new SegmentDto(map(from), map(to));
+		}
 		return new LineDto(map(line.normal()), map(line.offset()));
 	}
 
-	public CircleDto map(final Circle circle) {
+	public CurveDto map(final Circle circle) {
 		return new CircleDto(map(circle.center()), map(circle.radiusSquare().root()));
 	}
 	

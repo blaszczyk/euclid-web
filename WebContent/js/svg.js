@@ -32,13 +32,16 @@ function draw() {
 
 function board(b, color) {
 	r='';
-	b.points.forEach( p => r+=point(p, color));
-    b.curves.forEach( c => {
-    	if(c.type==="line") { r+=line(c, color); }
-        if(c.type==="circle") { r+=circle(c, color); }
-    });
+	if(b) {
+		b.points.forEach( p => r+=point(p, color));
+		b.curves.forEach( c => {
+			if(c.type==="line") { r+=line(c, color); }
+			if(c.type==="segment") { r+=segment(c, color); }
+			if(c.type==="circle") { r+=circle(c, color); }
+	    });
+	}
 	return r;
-}
+};
 
 function point(p, color) {
   return '<circle cx="'+scaleX(p.x)+'" cy="'+scaleY(p.y)+'" r="5" stroke="black" stroke-width="1" fill="'+color+'"/>';
@@ -68,7 +71,11 @@ function line(l,color) {
   
   p1=ps[0];
   p2=ps[1];
-  return '<line x1="'+scaleX(p1.x)+'" y1="'+scaleY(p1.y)+'" x2="'+scaleX(p2.x)+'" y2="'+scaleY(p2.y)+'" stroke="'+color+'" stroke-width="2"/>'
+  return '<line x1="'+scaleX(p1.x)+'" y1="'+scaleY(p1.y)+'" x2="'+scaleX(p2.x)+'" y2="'+scaleY(p2.y)+'" stroke="'+color+'" stroke-width="2"/>';
+};
+
+function segment(s,color) {
+  return '<line x1="'+scaleX(s.from.x)+'" y1="'+scaleY(s.from.y)+'" x2="'+scaleX(s.to.x)+'" y2="'+scaleY(s.to.y)+'" stroke="'+color+'" stroke-width="2"/>';
 };
 
 function circle(c,color) {

@@ -28,7 +28,7 @@ public class SolverEndpoint extends AbstractEndpoint {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response solve(final ProblemDto problemDto) {
-		final List<String> lines = mapper.map(problemDto);
+		final List<String> lines = ProblemMapper.map(problemDto);
 		final Problem problem = parseProblem(lines);
 		final String jobId = jobManager.createAndStartJob(problem);
 		return ok(jobId);
@@ -43,14 +43,14 @@ public class SolverEndpoint extends AbstractEndpoint {
 			final Optional<Board> solution = jobManager.getSolution(jobId);
 			final Problem problem = jobManager.getProblem(jobId);
 			jobManager.removeJob(jobId);
-			final SolutionDto solutionDto;
+			final List<BoardDto> constructionDto;
 			if(solution.isPresent()) {
-				solutionDto = mapper.map(problem, solution.get());
+				constructionDto = new BoardMapper(problem).map(solution.get());
 			}
 			else {
-				solutionDto = mapper.map(problem);
+				constructionDto = new BoardMapper(problem).map();
 			}
-			return ok(solutionDto);
+			return ok(constructionDto);
 		}
 		return ok();
 	}

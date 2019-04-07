@@ -1,6 +1,6 @@
 package euclid.web.dto;
 
-public abstract class CurveDto {
+public abstract class CurveDto extends ElementDto {
 	
 	private String type;
 	

@@ -27,7 +27,7 @@ function pollSolution() {
 	success: s => {
 		if(s) {
 			solution=s;
-			step=s.construction.length-1;
+			step=s.length-1;
 			if(!step) alert('no solution');
 			jobId=null;
 			enableButtons();
@@ -138,12 +138,17 @@ function problem() {
     };
 };
 
+$('body').delegate('button','click', function() {
+})
+
+
 function enableButtons() {
-	  $('#preview').attr('enabled', !jobId);
-	  $('#construct').attr('enabled', !jobId);
-	  $('#halt').attr('enabled', !!jobId);
-	  $('#prev').attr('enabled', solution && step > 0);
-	  $('#next').attr('enabled', solution && step < solution.construction.length - 1);
+	function e(id,enable) {
+		$('#'+id).prop('disabled',!enable);
+	};
+	e('preview', !jobId);
+	e('construct', !jobId);
+	e('halt', jobId);
 };
 
 $(list);

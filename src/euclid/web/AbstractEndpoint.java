@@ -14,9 +14,6 @@ import euclid.problem.ProblemParserException;
 abstract class AbstractEndpoint {
 	
 	@Inject
-	Mapper mapper;
-	
-	@Inject
 	Algebra algebra;
 	
 	Problem parseProblem(final List<String> lines) {

@@ -42,10 +42,10 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response preview(final ProblemDto problemDto) {
-		final List<String> lines = mapper.map(problemDto);
+		final List<String> lines = ProblemMapper.map(problemDto);
 		final Problem problem = parseProblem(lines);
-		final SolutionDto solution = mapper.map(problem);
-		return ok(solution);
+		final List<BoardDto> preview = new BoardMapper(problem).map();
+		return ok(preview);
 	}
 	
 	@GET
@@ -66,7 +66,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 		try {
 			final File file = file(name);
 			final List<String> lines = Files.readAllLines(file.toPath());
-			final ProblemDto problemDto = mapper.map(lines);
+			final ProblemDto problemDto = ProblemMapper.map(lines);
 			return ok(problemDto);
 		}
 		catch (IOException e) {
@@ -79,7 +79,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	@Path("/{name}")
 	public Response save(@PathParam("name") final String name, final ProblemDto problemDto) {
 		try {
-			final List<String> lines = mapper.map(problemDto);
+			final List<String> lines = ProblemMapper.map(problemDto);
 			final File file = file(name);
 			Files.write(file.toPath(), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 			return ok();

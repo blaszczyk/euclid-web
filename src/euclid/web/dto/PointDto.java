@@ -1,6 +1,6 @@
 package euclid.web.dto;
 
-public class PointDto {
+public class PointDto extends ElementDto {
 	private String x;
 	private String y;
 	

@@ -5,15 +5,13 @@ function prev() {
   if(step>0) {
 	  step--;
 	  draw();
-	  enableButtons()
   }
 }
 
 function next() {
-  if(step<solution.construction.length) {
+  if(step<solution.length-1) {
 	  step++;
 	  draw();
-	  enableButtons()
   }
 }
 
@@ -23,31 +21,29 @@ var scale = 100;
 
 function draw() {
   svg = '<svg width="'+width+'" height="'+height+'">'
-  svg += board(solution.construction[step],'lightgray');
-  svg += board(solution.required,'red');
-  svg += board(solution.initial,'green');
+  svg += board(solution[step]);
   svg += '</svg>';
   $('#result').html(svg)
 };
 
-function board(b, color) {
+function board(b) {
 	r='';
 	if(b) {
-		b.points.forEach( p => r+=point(p, color));
+		b.points.forEach( p => r+=point(p));
 		b.curves.forEach( c => {
-			if(c.type==="line") { r+=line(c, color); }
-			if(c.type==="segment") { r+=segment(c, color); }
-			if(c.type==="circle") { r+=circle(c, color); }
+			if(c.type==="line") { r+=line(c); }
+			if(c.type==="segment") { r+=segment(c); }
+			if(c.type==="circle") { r+=circle(c); }
 	    });
 	}
 	return r;
 };
 
-function point(p, color) {
-  return '<circle cx="'+scaleX(p.x)+'" cy="'+scaleY(p.y)+'" r="5" stroke="black" stroke-width="1" fill="'+color+'"/>';
+function point(p) {
+  return '<circle cx="'+scaleX(p.x)+'" cy="'+scaleY(p.y)+'" r="5" stroke="black" stroke-width="1" fill="'+color(p)+'"/>';
 };
 
-function line(l,color) {
+function line(l) {
   ps=[];
   
   dx = width / scale / 2;
@@ -71,16 +67,22 @@ function line(l,color) {
   
   p1=ps[0];
   p2=ps[1];
-  return '<line x1="'+scaleX(p1.x)+'" y1="'+scaleY(p1.y)+'" x2="'+scaleX(p2.x)+'" y2="'+scaleY(p2.y)+'" stroke="'+color+'" stroke-width="2"/>';
+  return '<line x1="'+scaleX(p1.x)+'" y1="'+scaleY(p1.y)+'" x2="'+scaleX(p2.x)+'" y2="'+scaleY(p2.y)+'" stroke="'+color(l)+'" stroke-width="2"/>';
 };
 
-function segment(s,color) {
-  return '<line x1="'+scaleX(s.from.x)+'" y1="'+scaleY(s.from.y)+'" x2="'+scaleX(s.to.x)+'" y2="'+scaleY(s.to.y)+'" stroke="'+color+'" stroke-width="2"/>';
+function segment(s) {
+  return '<line x1="'+scaleX(s.from.x)+'" y1="'+scaleY(s.from.y)+'" x2="'+scaleX(s.to.x)+'" y2="'+scaleY(s.to.y)+'" stroke="'+color(s)+'" stroke-width="2"/>';
 };
 
-function circle(c,color) {
-  return '<circle cx="'+scaleX(c.center.x)+'" cy="'+scaleY(c.center.y)+'" r="'+c.radius*scale+'" stroke="'+color+'" stroke-width="2" fill="transparent"/>';
+function circle(c) {
+  return '<circle cx="'+scaleX(c.center.x)+'" cy="'+scaleY(c.center.y)+'" r="'+c.radius*scale+'" stroke="'+color(c)+'" stroke-width="2" fill="transparent"/>';
 };
+
+function color(e) {
+	if(e.role === 'initial') return 'green';
+	if(e.role === 'required') return 'red';
+	return 'lightgray';
+}
 
 function scaleX(x) {
   return x * scale + width / 2;

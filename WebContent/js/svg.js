@@ -60,11 +60,14 @@ function line(l) {
     ps.push({x:(o-nydy)/nx, y:dy});
   if(Math.abs(o+nydy)<=Math.abs(nxdx))
     ps.push({x:(o+nydy)/nx, y:-dy});
-  if(Math.abs(o-nxdx)<=Math.abs(nydy))
+  if(Math.abs(o-nxdx)<Math.abs(nydy))
     ps.push({x:dx, y:(o-nxdx)/ny});
-  if(Math.abs(o+nxdx)<=Math.abs(nydy))
+  if(Math.abs(o+nxdx)<Math.abs(nydy))
     ps.push({x:-dx, y:(o+nxdx)/ny});
-  
+  if(ps.length != 2) {
+	  console.log('out of bounds: ' + JSON.stringify(l));
+	  return;
+  }
   p1=ps[0];
   p2=ps[1];
   return '<line x1="'+scaleX(p1.x)+'" y1="'+scaleY(p1.y)+'" x2="'+scaleX(p2.x)+'" y2="'+scaleY(p2.y)+'" stroke="'+color(l)+'" stroke-width="2"/>';

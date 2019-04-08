@@ -18,6 +18,7 @@ import euclid.model.*;
 import euclid.problem.Problem;
 import euclid.problem.ProblemParser;
 import euclid.web.dto.*;
+import euclid.web.job.Job;
 import euclid.web.job.JobManager;
 
 @Path("/solve")
@@ -42,10 +43,11 @@ public class SolverEndpoint extends AbstractEndpoint {
 	@Path("/{jobId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pollSolution(@PathParam("jobId") final String jobId) {
+		final Job job = jobManager.job(jobId);
 	
-		if(jobManager.isFinished(jobId)) {
-			final Optional<Board> solution = jobManager.getSolution(jobId);
-			final Problem problem = jobManager.getProblem(jobId);
+		if(job.finished()) {
+			final Optional<Board> solution = job.solution();
+			final Problem problem = job.problem();
 			jobManager.removeJob(jobId);
 			final List<BoardDto> constructionDto;
 			if(solution.isPresent()) {

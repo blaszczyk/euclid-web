@@ -27,19 +27,20 @@ function pollSolution() {
 	dataType: 'json',
 	success: c => {
 		if(c) {
-			construction=c;
-			step=c.length-1;
 			jobId=null;
 			enableButtons();
+			construction=c;
+			step=c.length-1;
 			draw();
 			if(step<=1)
 				alert('no solution');
 		}
-		else if(jobId != null){
+		else {
 			setTimeout(pollSolution,1000);
 		}
 	},
 	error: e => {
+	  jobId=null;
 	  console.log(e);
 	}
   });
@@ -51,8 +52,7 @@ function halt() {
 	type:'DELETE',
 	url:'rest/solve/'+jobId,
 	success: () => {
-		jobId=null;
-		enableButtons()
+	  alert('job '+jobId+' terminated');
 	},
 	error: e => {
 	  console.log(e);

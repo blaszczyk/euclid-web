@@ -1,6 +1,6 @@
 package euclid.web.job;
 
-import java.util.Optional;
+import java.util.Collection;
 
 import euclid.engine.SearchEngine;
 import euclid.kpi.KpiMonitor;
@@ -25,8 +25,8 @@ public class Job {
 		return problem;
 	}
 
-	public Optional<Board> solution() {
-		return engine.firstSolution();
+	public Collection<Board> solutions() {
+		return engine.solutions();
 	}
 
 	public boolean finished() {
@@ -42,5 +42,5 @@ public class Job {
 		engine.halt();
 		monitor.halt();
 	}
-
+	
 }

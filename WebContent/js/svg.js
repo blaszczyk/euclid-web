@@ -19,7 +19,11 @@ var width = 800;
 var height = 800;
 var scale = 100;
 
-function draw() {
+function draw(newConstruction) {
+  if(newConstruction) {
+	  construction = newConstruction;
+	  step = construction.length-1;
+  }
   svg = '<svg width="'+width+'" height="'+height+'">'
   svg += board(construction[step]);
   svg += '</svg>';

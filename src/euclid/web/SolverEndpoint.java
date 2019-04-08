@@ -1,7 +1,7 @@
 package euclid.web;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -46,15 +46,15 @@ public class SolverEndpoint extends AbstractEndpoint {
 		final Job job = jobManager.job(jobId);
 	
 		if(job.finished()) {
-			final Optional<Board> solution = job.solution();
+			final Collection<Board> solutions = job.solutions();
 			final Problem problem = job.problem();
 			jobManager.removeJob(jobId);
 			final List<BoardDto> constructionDto;
-			if(solution.isPresent()) {
-				constructionDto = new BoardMapper(problem).map(solution.get());
+			if(solutions.isEmpty()) {
+				constructionDto = new BoardMapper(problem).map();
 			}
 			else {
-				constructionDto = new BoardMapper(problem).map();
+				constructionDto = new BoardMapper(problem).map(solutions.iterator().next());
 			}
 			return ok(constructionDto);
 		}

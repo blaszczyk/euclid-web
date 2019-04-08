@@ -70,7 +70,7 @@ public class JobManager {
 		
 		final Algorithm<Board> algorithm = createAlgorithm(problem, algebra);
 
-		final EngineParameters parameters = new EngineParameters(jobId, false, threadCount(), config.getBoolean("cache.candidates"));
+		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), threadCount(), config.getInt("engine.dedupedepth"));
 		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters);
 
 		engine.kpiReporters().forEach(monitor::addReporter);

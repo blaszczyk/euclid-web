@@ -14,7 +14,8 @@ public class ProblemMapper {
 		lines.add("initial=" + problemDto.getInitial());
 		lines.add("required=" + problemDto.getRequired());
 		lines.add("maxdepth=" + problemDto.getDepth());
-		lines.add("findall=false");
+		lines.add("depthfirst=" + problemDto.getDepthFirst());
+		lines.add("maxsolutions=1");
 		lines.add("algorithm=curve_based");
 		return lines;
 	}
@@ -24,6 +25,7 @@ public class ProblemMapper {
 		String initial = "";
 		String required = "";
 		int depth = 0;
+		String depthFirst = "false";
 		for(final String line : lines) {
 			boolean isReservedKeyword = false;
 			if(line.contains("=")) {
@@ -40,7 +42,10 @@ public class ProblemMapper {
 				else if(key.equals(ProblemParser.KEY_MAX_DEPTH)) {
 					depth = Integer.parseInt(value.trim());
 				}
-				else if(!key.equals(ProblemParser.KEY_ALGORITHM) && !key.equals(ProblemParser.KEY_FIND_ALL) ){
+				else if(key.equals(ProblemParser.KEY_DEPTH_FIRST)) {
+					depthFirst = value.trim();
+				}
+				else if(!key.equals(ProblemParser.KEY_ALGORITHM) && !key.equals(ProblemParser.KEY_MAX_SOLUTIONS) ){
 					isReservedKeyword = false;
 				}
 			}
@@ -48,6 +53,6 @@ public class ProblemMapper {
 				variables.append(line).append("\r\n");
 			}
 		}
-		return new ProblemDto(variables.toString(), initial, required, depth);
+		return new ProblemDto(variables.toString(), initial, required, depth, depthFirst);
 	}
 }

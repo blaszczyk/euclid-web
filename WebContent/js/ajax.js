@@ -1,3 +1,9 @@
+$(document).ajaxError( e => {
+  updateJobId();
+  console.log(e);
+  alert(e.responseText);
+});
+
 var jobId;
 
 function construct() {
@@ -5,15 +11,10 @@ function construct() {
 	type:'POST',
 	url:'rest/solve',
     contentType: 'application/json',
-	data: JSON.stringify(problem()),
+	data: problem(),
 	success: jId => {
-		jobId = jId;
-		enableButtons();
+		updateJobId(jId);
 		setTimeout(pollSolution,1000);
-	},
-	error: e => {
-	  console.log(e);
-	  alert(e.responseText);
 	}
   });
 };
@@ -27,36 +28,22 @@ function pollSolution() {
 	dataType: 'json',
 	success: c => {
 		if(c) {
-			jobId=null;
-			enableButtons();
-			construction=c;
-			step=c.length-1;
-			draw();
-			if(step<=1)
+			updateJobId();
+			draw(c);
+			if(c.length<=1)
 				alert('no solution');
 		}
 		else {
 			setTimeout(pollSolution,1000);
 		}
-	},
-	error: e => {
-	  jobId=null;
-	  console.log(e);
 	}
   });
 };
 
 function halt() {
-  if(!jobId) return;
   $.ajax({
 	type:'DELETE',
-	url:'rest/solve/'+jobId,
-	success: () => {
-	  alert('job '+jobId+' terminated');
-	},
-	error: e => {
-	  console.log(e);
-	}
+	url:'rest/solve/'+jobId
   });
 };
 
@@ -66,17 +53,9 @@ function preview() {
 	url:'rest/problem',
     Accept : 'application/json',
     contentType: 'application/json',
-	data: JSON.stringify(problem()),
+	data: problem(),
 	dataType: 'json',
-	success: c => {
-		construction=c;
-		step=0;
-		draw();
-	},
-	error: e => {
-	  console.log(e);
-	  alert(e.responseText);
-	}
+	success: draw
   });
 };
 
@@ -90,52 +69,44 @@ function list() {
 		o='';
 		list.forEach( p => o+='<option value="{}">{}</option>'.replace(/{}/g, p));
 		$('#list').html(o);
-	},
-	error: e => {
-	  console.log(e);
 	}
   });
 };
 
 function load() {
-  name = $('#list').attr('value');
+  name = val('list');
   $.ajax({
 	type:'GET',
 	url:'rest/problem/'+name,
     Accept: 'application/json',
 	dataType: 'json',
 	success: p => {
-		$('#variables').attr('value', p.variables);
-		$('#initial').attr('value', p.initial);
-		$('#required').attr('value', p.required);
-		$('#depth').attr('value', p.depth);
-		$('#name').attr('value', name);
-	},
-	error: e => {
-	  console.log(e);
+		val('variables', p.variables);
+		val('initial', p.initial);
+		val('required', p.required);
+		val('depth', p.depth);
+		val('depthFirst', p.depthFirst);
+		val('name', name);
 	}
   });
 };
 
 function save() {
-  name = $('#name').attr('value');
+  name = val('name');
   $.ajax({
 	type:'PUT',
 	url:'rest/problem/'+name,
     contentType: 'application/json',
-	data: JSON.stringify(problem()),
+	data: problem(),
 	success: s => {
 		list();
 		alert(name+' saved successfully!');
-	},
-	error: e => {
-	  console.log(e);
 	}
   });
 };
 
 function del() {
-    name = $('#list').attr('value');
+    name = val('list');
     if(!confirm('delete ' + name + '?'))
     	return;
     $.ajax({
@@ -143,23 +114,22 @@ function del() {
 	  	url:'rest/problem/'+name,
 	  	success: s => {
 	  		list();
-	  	},
-	  	error: e => {
-	  	  console.log(e);
 	  	}
     });
 };
 
 function problem() {
-	return{
-      initial : $('#initial').attr('value'),
-      required : $('#required').attr('value'),
-      variables : $('#variables').attr('value'),
-      depth : $('#depth').attr('value')
-    };
+	return JSON.stringify({
+      initial : val('initial'),
+      required : val('required'),
+      variables : val('variables'),
+      depth : val('depth'),
+      depthFirst : val('depthFirst')
+    });
 };
 
-function enableButtons() {
+function updateJobId(jId) {
+	jobId=jId;
 	function e(id,enable) {
 		$('#'+id).prop('disabled',!enable);
 	};
@@ -167,5 +137,12 @@ function enableButtons() {
 	e('construct', !jobId);
 	e('halt', jobId);
 };
+
+function val(id, value) {
+	if(value === undefined) {
+		return $('#'+id).val();
+	}
+	$('#'+id).val(value);
+}
 
 $(list);

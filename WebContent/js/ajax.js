@@ -134,6 +134,22 @@ function save() {
   });
 };
 
+function del() {
+    name = $('#list').attr('value');
+    if(!confirm('delete ' + name + '?'))
+    	return;
+    $.ajax({
+	  	type:'DELETE',
+	  	url:'rest/problem/'+name,
+	  	success: s => {
+	  		list();
+	  	},
+	  	error: e => {
+	  	  console.log(e);
+	  	}
+    });
+};
+
 function problem() {
 	return{
       initial : $('#initial').attr('value'),
@@ -142,10 +158,6 @@ function problem() {
       depth : $('#depth').attr('value')
     };
 };
-
-$('body').delegate('button','click', function() {
-})
-
 
 function enableButtons() {
 	function e(id,enable) {

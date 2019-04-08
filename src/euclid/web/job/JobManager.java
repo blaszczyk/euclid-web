@@ -33,7 +33,7 @@ public class JobManager {
 		final Algorithm<Board> algorithm = new CurveBasedSearch(problem, algebra);
 		final int threadCount = Runtime.getRuntime().availableProcessors();
 		final String jobId = String.format("%08X", algorithm.hashCode());
-		final EngineParameters parameters = new EngineParameters(jobId, false, threadCount);
+		final EngineParameters parameters = new EngineParameters(jobId, false, threadCount, false);
 		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters);
 		
 		final KpiMonitor monitor = new KpiMonitor(5000);

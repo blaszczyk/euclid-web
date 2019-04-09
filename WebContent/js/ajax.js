@@ -81,11 +81,7 @@ function load() {
     Accept: 'application/json',
 	dataType: 'json',
 	success: p => {
-		val('variables', p.variables);
-		val('initial', p.initial);
-		val('required', p.required);
-		val('depth', p.depth);
-		val('depthFirst', p.depthFirst);
+		Object.keys(p).forEach(k => val(k, p[k]));
 		val('name', name);
 	}
   });
@@ -119,23 +115,21 @@ function del() {
 };
 
 function problem() {
-	return JSON.stringify({
-      initial : val('initial'),
-      required : val('required'),
-      variables : val('variables'),
-      depth : val('depth'),
-      depthFirst : val('depthFirst')
-    });
+	p = {};
+	$('#problem').children()
+		.filter((i,c) => c.id)
+		.map((i,c) => c.id)
+		.each((i,id) => p[id]=val(id));
+	return JSON.stringify(p);
 };
 
 function updateJobId(jId) {
 	jobId=jId;
-	function e(id,enable) {
-		$('#'+id).prop('disabled',!enable);
-	};
-	e('preview', !jobId);
-	e('construct', !jobId);
-	e('halt', jobId);
+	$('#controls').children()
+	  .filter((i,c)=>c.id)
+	  .each((i,c) => {
+	    c.disabled = ((c.id==='halt') == !jobId);
+	  });
 };
 
 function val(id, value) {

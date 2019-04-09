@@ -9,34 +9,40 @@
     <h1>Solve Problems in Euclidean Geometry</h1>
     <div>
       <div id="result" style="float:left;">
-	  <svg width="800" height="800"></svg>
+	    <svg width="800" height="800"></svg>
       </div>
       <div align="left" style="float:left;">
-        <select id="list"></select>
-        <input id="load" value="load" type="button" onclick="load();"/>
-        <input id="delete" value="delete" type="button" onclick="del();"/>
+        <div id="persistence">
+          <select id="list"></select>
+          <input id="load" value="load" type="button" onclick="load();"/>
+          <input id="delete" value="delete" type="button" onclick="del();"/>
+          <br/>
+          <input id="name" type="text"></input>
+          <input id="save" value="save" type="button" onclick="save();"/>
+        </div>
         <br/>
-        <input id="name" type="text"></input>
-        <input id="save" value="save" type="button" onclick="save();"/>
+        <div id="problem">
+          variable definitions: <br/>
+          <textarea id="variables" rows="20" cols="60"></textarea>
+          <br/>
+          initial: <input id="initial" type="text"/>
+          <br/>
+          required: <input id="required" type="text"/>
+          <br/>
+          depth: <input id="depth" type="text"/>
+          <select id="depthFirst">
+            <option value="false">breadth first</option>
+            <option value="true">depth first</option>
+          </select>
+        </div>
         <br/>
-        variable definitions: <br/>
-        <textarea id="variables" rows="20" cols="60"></textarea>
-        <br/>
-        initial: <input id="initial" type="text"/>
-        <br/>
-        required: <input id="required" type="text"/>
-        <br/>
-        depth: <input id="depth" type="text"/>
-        <select id="depthFirst">
-          <option value="false">breadth first</option>
-          <option value="true">depth first</option>
-        </select>
-        <br/>
-        <input id="preview" value="preview" type="button" onclick="preview();"/>
-        <input id="construct" value="construct" type="button" onclick="construct();"/>
-        <input id="halt" value="halt" type="button" disabled onclick="halt();"/>
-        <input id="prev" value="<" type="button" style="width:15pt;" onclick="prev();"/>
-        <input id="next" value=">" type="button" style="width:15pt;" onclick="next();"/>
+        <div id="controls">
+          <input id="preview" value="preview" type="button" onclick="preview();"/>
+          <input id="construct" value="construct" type="button" onclick="construct();"/>
+          <input id="halt" value="halt" type="button" disabled onclick="halt();"/>
+          <input id="prev" value="<" type="button" style="width:15pt;" onclick="prev();"/>
+          <input id="next" value=">" type="button" style="width:15pt;" onclick="next();"/>
+        </div>
       </div>
     </div>
   </body>

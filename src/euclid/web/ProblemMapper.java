@@ -3,6 +3,8 @@ package euclid.web;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import euclid.algorithm.AlgorithmType;
 import euclid.problem.ProblemParser;
 import euclid.web.dto.*;
 
@@ -16,7 +18,7 @@ public class ProblemMapper {
 		lines.add("maxdepth=" + problemDto.getDepth());
 		lines.add("depthfirst=" + problemDto.getDepthFirst());
 		lines.add("maxsolutions=1");
-		lines.add("algorithm=curve_based");
+		lines.add("algorithm=" + problemDto.getAlgorithm());
 		return lines;
 	}
 
@@ -26,6 +28,7 @@ public class ProblemMapper {
 		String required = "";
 		int depth = 0;
 		String depthFirst = "false";
+		AlgorithmType algorithm = null;
 		for(final String line : lines) {
 			boolean isReservedKeyword = false;
 			if(line.contains("=")) {
@@ -45,7 +48,10 @@ public class ProblemMapper {
 				else if(key.equals(ProblemParser.KEY_DEPTH_FIRST)) {
 					depthFirst = value.trim();
 				}
-				else if(!key.equals(ProblemParser.KEY_ALGORITHM) && !key.equals(ProblemParser.KEY_MAX_SOLUTIONS) ){
+				else if(key.equals(ProblemParser.KEY_ALGORITHM)) {
+					algorithm = AlgorithmType.valueOf(value.toUpperCase());
+				}
+				else if(!key.equals(ProblemParser.KEY_MAX_SOLUTIONS) ){
 					isReservedKeyword = false;
 				}
 			}
@@ -53,6 +59,6 @@ public class ProblemMapper {
 				variables.append(line).append("\r\n");
 			}
 		}
-		return new ProblemDto(variables.toString(), initial, required, depth, depthFirst);
+		return new ProblemDto(variables.toString(), initial, required, depth, depthFirst, algorithm);
 	}
 }

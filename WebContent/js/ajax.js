@@ -1,7 +1,7 @@
-$(document).ajaxError( e => {
+$(document).ajaxError( (e,f,g) => {
   updateJobId();
-  console.log(e);
-  alert(e.responseText);
+  console.log(e,f,g);
+  alert(f.responseText);
 });
 
 var jobId;

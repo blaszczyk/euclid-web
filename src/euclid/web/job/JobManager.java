@@ -8,19 +8,16 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import euclid.algorithm.Algorithm;
-import euclid.algorithm.CurveBasedSearch;
-import euclid.algorithm.PointBasedSearch;
 import euclid.engine.EngineParameters;
 import euclid.engine.SearchEngine;
 import euclid.kpi.KpiCsvWriter;
 import euclid.kpi.KpiMonitor;
 import euclid.kpi.KpiReporter;
 import euclid.kpi.KpiStdoutLogger;
-import euclid.model.Algebra;
+import euclid.model.AdvancedAlgebra;
 import euclid.model.BasicCurveLifeCycle;
 import euclid.model.Board;
 import euclid.model.CachedCurveLifeCycle;
-import euclid.model.CachedIntersectionAlgebra;
 import euclid.model.CurveLifeCycle;
 import euclid.problem.Problem;
 import euclid.web.config.Config;
@@ -63,13 +60,12 @@ public class JobManager {
 		
 		final CurveLifeCycle lifeCycle = config.getBoolean("cache.curves") ? new CachedCurveLifeCycle() : new BasicCurveLifeCycle();
 		monitor.addReporter(lifeCycle);
-		final Algebra algebra = config.getBoolean("cache.intersections") ? new CachedIntersectionAlgebra(lifeCycle) : new Algebra(lifeCycle);
+		final AdvancedAlgebra algebra = new AdvancedAlgebra(lifeCycle);
 		if(algebra instanceof KpiReporter) {
 			monitor.addReporter((KpiReporter) algebra);
 		}
-		
-		final Algorithm<Board> algorithm = createAlgorithm(problem, algebra);
 
+		final Algorithm<Board> algorithm = problem.algorithm().create(problem, algebra);
 		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), threadCount(), config.getInt("engine.dedupedepth"));
 		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters);
 
@@ -83,16 +79,6 @@ public class JobManager {
 		}
 		
 		return new Job(problem, engine, monitor);
-	}
-
-	private Algorithm<Board> createAlgorithm(final Problem problem, final Algebra algebra) {
-		switch (problem.algorithmType()) {
-		case CURVE_BASED:
-			return new CurveBasedSearch(problem, algebra);
-		case POINT_BASED:
-			return new PointBasedSearch(problem, algebra);
-		}
-		return null;
 	}
 	
 	private int threadCount() {

@@ -6,7 +6,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-import euclid.model.*;
+import euclid.geometry.Circle;
+import euclid.geometry.Curve;
+import euclid.geometry.Line;
+import euclid.geometry.Number;
+import euclid.geometry.Point;
+import euclid.geometry.Segment;
+import euclid.sets.*;
 import euclid.problem.Problem;
 import euclid.web.dto.*;
 
@@ -104,7 +110,7 @@ public class BoardMapper {
 		return new CircleDto(mapPoint(circle.center()), mapNumber(circle.radiusSquare().root()));
 	}
 	
-	private String mapNumber(final Constructable number) {
+	private String mapNumber(final Number number) {
 		return new DecimalFormat("#.######").format(number.doubleValue());
 	}
 }

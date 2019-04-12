@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import euclid.engine.SearchEngine;
 import euclid.kpi.KpiMonitor;
-import euclid.model.Board;
+import euclid.sets.Board;
 import euclid.problem.Problem;
 
 public class Job {

@@ -23,16 +23,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import euclid.model.Algebra;
 import euclid.problem.Problem;
 import euclid.problem.ProblemParser;
 import euclid.web.dto.*;
 
 @Path("/problem")
 public class ProblemEndpoint extends AbstractEndpoint {
-
-	@Inject
-	Algebra algebra;
 	
 	@Inject()
 	@Named("root-dir")
@@ -43,7 +39,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response preview(final ProblemDto problemDto) {
 		final List<String> lines = ProblemMapper.map(problemDto);
-		final Problem problem =  new ProblemParser(algebra, lines).parse();
+		final Problem problem =  new ProblemParser(lines).parse();
 		final List<BoardDto> preview = new BoardMapper(problem).map();
 		return ok(preview);
 	}

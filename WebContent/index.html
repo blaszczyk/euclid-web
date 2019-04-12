@@ -14,11 +14,11 @@
       <div align="left" style="float:left;">
         <div id="persistence">
           <select id="list"></select>
-          <input id="load" value="load" type="button" onclick="load();"/>
-          <input id="delete" value="delete" type="button" onclick="del();"/>
+          <button id="load" accesskey="l">load</button>
+          <button id="del" accesskey="d">delete</button>
           <br/>
           <input id="name" type="text"></input>
-          <input id="save" value="save" type="button" onclick="save();"/>
+          <button id="save" accesskey="s">save</button>
         </div>
         <br/>
         <div id="problem">
@@ -44,11 +44,11 @@
         </div>
         <br/>
         <div id="controls">
-          <input id="preview" value="preview" type="button" onclick="preview();"/>
-          <input id="construct" value="construct" type="button" onclick="construct();"/>
-          <input id="halt" value="halt" type="button" disabled onclick="halt();"/>
-          <input id="prev" value="<" type="button" style="width:15pt;" onclick="prev();"/>
-          <input id="next" value=">" type="button" style="width:15pt;" onclick="next();"/>
+          <button id="preview" accesskey="p">preview</button>
+          <button id="construct" accesskey="c">construct</button>
+          <button id="halt" accesskey="h" disabled>halt</button>
+          <button id="prev" accesskey="r" style="width:15pt;">&lt;</button>
+          <button id="next" accesskey="t" style="width:15pt;">&gt;</button>
         </div>
       </div>
     </div>

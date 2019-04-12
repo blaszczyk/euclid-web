@@ -1,7 +1,8 @@
 $(document).ajaxError( (e,f,g) => {
   updateJobId();
   console.log(e,f,g);
-  alert(f.responseText);
+  if(f.responseText)
+    alert(f.responseText);
 });
 
 var jobId;
@@ -139,4 +140,7 @@ function val(id, value) {
 	$('#'+id).val(value);
 }
 
-$(list);
+$(() => {
+	list();
+	$('button').click(e => window[e.srcElement.id]());
+});

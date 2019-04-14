@@ -42,7 +42,7 @@ public class Job {
 	}
 
 	void start() {
-		engine.start(true);
+		engine.start();
 		monitor.start();
 	}
 

@@ -10,19 +10,21 @@ public class ProblemDto {
 	private String required;
 	private int depth;
 	private String depthFirst;
+	private String shuffle;
 	private AlgorithmType algorithm;
 	private PriorityType priority;
 	
 	public ProblemDto() {
 	}
 	
-	public ProblemDto(final String variables, final String initial, final String required, 
-			final int depth, final String depthFirst, final AlgorithmType algorithm, final PriorityType priority) {
+	public ProblemDto(final String variables, final String initial, final String required, final int depth, 
+			final String depthFirst, final String shuffle, final AlgorithmType algorithm, final PriorityType priority) {
 		this.variables = variables;
 		this.initial = initial;
 		this.required = required;
 		this.depth = depth;
 		this.depthFirst = depthFirst;
+		this.shuffle = shuffle;
 		this.algorithm = algorithm;
 		this.priority = priority;
 	}
@@ -57,6 +59,14 @@ public class ProblemDto {
 	}
 	public void setDepthFirst(String depthFirst) {
 		this.depthFirst = depthFirst;
+	}
+
+	public String getShuffle() {
+		return shuffle;
+	}
+
+	public void setShuffle(String shuffle) {
+		this.shuffle = shuffle;
 	}
 
 	public AlgorithmType getAlgorithm() {

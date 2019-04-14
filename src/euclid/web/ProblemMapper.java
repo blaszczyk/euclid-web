@@ -18,6 +18,7 @@ public class ProblemMapper {
 		addKeyValueLine(ProblemParser.KEY_REQUIRED, problemDto.getRequired(), lines);
 		addKeyValueLine(ProblemParser.KEY_MAX_DEPTH, problemDto.getDepth(), lines);
 		addKeyValueLine(ProblemParser.KEY_DEPTH_FIRST, problemDto.getDepthFirst(), lines);
+		addKeyValueLine(ProblemParser.KEY_SHUFFLE, problemDto.getShuffle(), lines);
 		addKeyValueLine(ProblemParser.KEY_MAX_SOLUTIONS, 1, lines);
 		addKeyValueLine(ProblemParser.KEY_ALGORITHM, problemDto.getAlgorithm(), lines);
 		addKeyValueLine(ProblemParser.KEY_PRIORITY, problemDto.getPriority(), lines);
@@ -34,6 +35,7 @@ public class ProblemMapper {
 		String required = "";
 		int depth = 0;
 		String depthFirst = "false";
+		String shuffle = "false";
 		AlgorithmType algorithm = null;
 		PriorityType priority = null;
 		for(final String line : lines) {
@@ -55,6 +57,9 @@ public class ProblemMapper {
 				else if(key.equals(ProblemParser.KEY_DEPTH_FIRST)) {
 					depthFirst = value.trim();
 				}
+				else if(key.equals(ProblemParser.KEY_SHUFFLE)) {
+					shuffle = value.trim();
+				}
 				else if(key.equals(ProblemParser.KEY_ALGORITHM)) {
 					algorithm = AlgorithmType.valueOf(value.toUpperCase());
 				}
@@ -69,6 +74,6 @@ public class ProblemMapper {
 				variables.append(line).append("\r\n");
 			}
 		}
-		return new ProblemDto(variables.toString(), initial, required, depth, depthFirst, algorithm, priority);
+		return new ProblemDto(variables.toString(), initial, required, depth, depthFirst, shuffle, algorithm, priority);
 	}
 }

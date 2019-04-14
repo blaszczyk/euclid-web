@@ -13,6 +13,7 @@ import euclid.engine.SearchEngine;
 import euclid.kpi.KpiCsvWriter;
 import euclid.kpi.KpiMonitor;
 import euclid.kpi.KpiStdoutLogger;
+import euclid.kpi.SystemKpi;
 import euclid.sets.Board;
 import euclid.problem.Problem;
 import euclid.web.config.Config;
@@ -53,11 +54,12 @@ public class JobManager {
 	private Job createJob(final Problem problem, final String jobId) {
 		final KpiMonitor monitor = new KpiMonitor(config.getInt("kpi.interval"));
 
-		final Algorithm<Board> algorithm = problem.algorithm().create(problem);
+		final Algorithm<? extends Board> algorithm = problem.algorithm().create(problem);
 		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), threadCount(), config.getInt("engine.dedupedepth"));
-		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters);
+		final SearchEngine<? extends Board> engine = new SearchEngine<>(algorithm, parameters);
 
 		engine.kpiReporters().forEach(monitor::addReporter);
+		monitor.addReporter(new SystemKpi());
 
 		if(config.getBoolean("kpi.csv")) {
 			monitor.addConsumer(new KpiCsvWriter(new File(rootDir, "log")));

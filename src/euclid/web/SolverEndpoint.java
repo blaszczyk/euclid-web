@@ -1,7 +1,8 @@
 package euclid.web;
 
-import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -14,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import euclid.kpi.KpiReport;
 import euclid.problem.Problem;
 import euclid.problem.ProblemParser;
 import euclid.sets.Board;
@@ -43,7 +45,7 @@ public class SolverEndpoint extends AbstractEndpoint {
 		final Job job = jobManager.job(jobId);
 	
 		if(job.finished()) {
-			final Collection<Board> solutions = job.solutions();
+			final List<? extends Board> solutions = job.solutions();
 			final Problem problem = job.problem();
 			jobManager.removeJob(jobId);
 			final List<BoardDto> constructionDto;
@@ -51,9 +53,25 @@ public class SolverEndpoint extends AbstractEndpoint {
 				constructionDto = new BoardMapper(problem).map();
 			}
 			else {
-				constructionDto = new BoardMapper(problem).map(solutions.iterator().next());
+				constructionDto = new BoardMapper(problem).map(solutions.get(0));
 			}
 			return ok(constructionDto);
+		}
+		return ok();
+	}
+
+	@GET
+	@Path("/{jobId}/kpi")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response pollKpi(@PathParam("jobId") final String jobId) {
+		final Job job = jobManager.job(jobId);
+		if(job != null) {
+			final KpiReport report = job.kpiReport();
+			if(report != null) {
+				final Map<String,Number> keyValues = new LinkedHashMap<>();
+				report.items().forEach(i -> keyValues.put(i.name(), i.value()));
+				return ok(keyValues);
+			}
 		}
 		return ok();
 	}

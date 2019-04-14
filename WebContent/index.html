@@ -5,6 +5,7 @@
   <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
   <script type='text/javascript' src='js/svg.js'></script>
   <script type='text/javascript' src='js/ajax.js'></script>
+  <script type='text/javascript' src='js/kpi.js'></script>
   <body>
     <h1>Solve Problems in Euclidean Geometry</h1>
     <div>
@@ -39,7 +40,12 @@
           <select id="algorithm">
             <option value="CURVE_BASED">basic curve based search</option>
             <option value="CURVE_ADVANCED">advanced curve based search</option>
+            <option value="CURVE_DEDUPE">deduplicating curve based search</option>
             <option value="POINT_BASED">basic point based search</option>
+          </select>
+          <select id="priority">
+            <option value="COARSE">coarse prioritization</option>
+            <option value="FINE">fine prioritization</option>
           </select>
         </div>
         <br/>
@@ -50,6 +56,11 @@
           <button id="prev" accesskey="r" style="width:15pt;">&lt;</button>
           <button id="next" accesskey="t" style="width:15pt;">&gt;</button>
         </div>
+        <button id="kpi" accesskey="k">kpi</button>
+      </div>
+      <div id="kpi-board" style="position:absolute;left:100px;top:100px;background-color:rgba(255,255,255,1);border-style:solid;display:none;">
+        <table id="kpi-key-vals"></table>
+        <table id="kpi-matrix"></table>
       </div>
     </div>
   </body>

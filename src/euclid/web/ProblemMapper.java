@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import euclid.algorithm.AlgorithmType;
+import euclid.algorithm.AlgorithmType.PriorityType;
 import euclid.problem.ProblemParser;
 import euclid.web.dto.*;
 
@@ -13,13 +14,18 @@ public class ProblemMapper {
 	public static List<String> map(final ProblemDto problemDto) {
 		final List<String> lines = new ArrayList<>();
 		lines.addAll(Arrays.asList(problemDto.getVariables().split("\\r?\\n")));
-		lines.add("initial=" + problemDto.getInitial());
-		lines.add("required=" + problemDto.getRequired());
-		lines.add("maxdepth=" + problemDto.getDepth());
-		lines.add("depthfirst=" + problemDto.getDepthFirst());
-		lines.add("maxsolutions=1");
-		lines.add("algorithm=" + problemDto.getAlgorithm());
+		addKeyValueLine(ProblemParser.KEY_INITIAL, problemDto.getInitial(), lines);
+		addKeyValueLine(ProblemParser.KEY_REQUIRED, problemDto.getRequired(), lines);
+		addKeyValueLine(ProblemParser.KEY_MAX_DEPTH, problemDto.getDepth(), lines);
+		addKeyValueLine(ProblemParser.KEY_DEPTH_FIRST, problemDto.getDepthFirst(), lines);
+		addKeyValueLine(ProblemParser.KEY_MAX_SOLUTIONS, 1, lines);
+		addKeyValueLine(ProblemParser.KEY_ALGORITHM, problemDto.getAlgorithm(), lines);
+		addKeyValueLine(ProblemParser.KEY_PRIORITY, problemDto.getPriority(), lines);
 		return lines;
+	}
+	
+	private static void addKeyValueLine(final String key, final Object value, final List<String> lines) {
+		lines.add(key + "=" + value);
 	}
 
 	public static ProblemDto map(final List<String> lines) {
@@ -29,6 +35,7 @@ public class ProblemMapper {
 		int depth = 0;
 		String depthFirst = "false";
 		AlgorithmType algorithm = null;
+		PriorityType priority = null;
 		for(final String line : lines) {
 			boolean isReservedKeyword = false;
 			if(line.contains("=")) {
@@ -51,6 +58,9 @@ public class ProblemMapper {
 				else if(key.equals(ProblemParser.KEY_ALGORITHM)) {
 					algorithm = AlgorithmType.valueOf(value.toUpperCase());
 				}
+				else if(key.equals(ProblemParser.KEY_PRIORITY)) {
+					priority = PriorityType.valueOf(value.toUpperCase());
+				}
 				else if(!key.equals(ProblemParser.KEY_MAX_SOLUTIONS) ){
 					isReservedKeyword = false;
 				}
@@ -59,6 +69,6 @@ public class ProblemMapper {
 				variables.append(line).append("\r\n");
 			}
 		}
-		return new ProblemDto(variables.toString(), initial, required, depth, depthFirst, algorithm);
+		return new ProblemDto(variables.toString(), initial, required, depth, depthFirst, algorithm, priority);
 	}
 }

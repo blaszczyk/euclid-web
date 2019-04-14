@@ -47,8 +47,9 @@ public class BoardMapper {
 	}
 
 	public List<BoardDto> map() {
-		return map(Board.withPoints(problem.initial().points().adjoin(problem.required().points()))
-				.andCurves(problem.initial().curves().adjoin(problem.required().curves())));
+		final PointSet points = problem.initial().points().adjoin(problem.required().points());
+		final CurveSet curves = problem.initial().curves().adjoin(problem.required().curves());
+		return map(new Board(points, curves));
 	}
 
 	public List<BoardDto> map(final Board construction) {

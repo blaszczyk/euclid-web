@@ -1,6 +1,7 @@
 package euclid.web.dto;
 
 import euclid.algorithm.AlgorithmType;
+import euclid.algorithm.AlgorithmType.PriorityType;
 
 public class ProblemDto {
 	
@@ -10,18 +11,20 @@ public class ProblemDto {
 	private int depth;
 	private String depthFirst;
 	private AlgorithmType algorithm;
+	private PriorityType priority;
 	
 	public ProblemDto() {
 	}
 	
 	public ProblemDto(final String variables, final String initial, final String required, 
-			final int depth, final String depthFirst, final AlgorithmType algorithm) {
+			final int depth, final String depthFirst, final AlgorithmType algorithm, final PriorityType priority) {
 		this.variables = variables;
 		this.initial = initial;
 		this.required = required;
 		this.depth = depth;
 		this.depthFirst = depthFirst;
 		this.algorithm = algorithm;
+		this.priority = priority;
 	}
 
 
@@ -62,6 +65,14 @@ public class ProblemDto {
 
 	public void setAlgorithm(AlgorithmType algorithm) {
 		this.algorithm = algorithm;
+	}
+
+	public PriorityType getPriority() {
+		return priority;
+	}
+
+	public void setPriority(PriorityType priority) {
+		this.priority = priority;
 	}
 
 }

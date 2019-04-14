@@ -85,7 +85,13 @@ public class BoardMapper {
 	private CurveDto mapCurve(final Curve curve) {
 		final CurveDto dto;
 		if(curve.isLine()) {
-			dto = mapLine(curve.asLine());
+			final Line line = curve.asLine();
+			if(line.isSegment()) {
+				dto = mapSegment(line.asSegment());
+			}
+			else {
+				dto = mapLine(curve.asLine());
+			}
 		}
 		else {
 			dto = mapCircle(curve.asCircle());
@@ -96,15 +102,15 @@ public class BoardMapper {
 	}
 
 	private CurveDto mapLine(final Line line) {
-		if(line.isSegment()) {
-			final Segment segment = line.asSegment();
-			final Point basePoint = line.normal().mul(line.offset());
-			final Point tangent = line.normal().orth();
-			final Point from = basePoint.add(tangent.mul(segment.from()));
-			final Point to = basePoint.add(tangent.mul(segment.to()));
-			return new SegmentDto(mapPoint(from), mapPoint(to));
-		}
 		return new LineDto(mapPoint(line.normal()), mapNumber(line.offset()));
+	}
+
+	private CurveDto mapSegment(final Segment segment) {
+		final Point basePoint = segment.normal().mul(segment.offset());
+		final Point tangent = segment.normal().orth();
+		final Point from = basePoint.add(tangent.mul(segment.from()));
+		final Point to = basePoint.add(tangent.mul(segment.to()));
+		return new SegmentDto(mapPoint(from), mapPoint(to));
 	}
 
 	private CurveDto mapCircle(final Circle circle) {

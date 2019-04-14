@@ -31,11 +31,12 @@ public class SolverEndpoint extends AbstractEndpoint {
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response solve(final ProblemDto problemDto) {
 		final List<String> lines = ProblemMapper.map(problemDto);
 		final Problem problem =  new ProblemParser(lines).parse();
 		final String jobId = jobManager.createAndStartJob(problem);
-		return ok(jobId);
+		return ok(new JobIdDto(jobId));
 	}
 
 	@GET

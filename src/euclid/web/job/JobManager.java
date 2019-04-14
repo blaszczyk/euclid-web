@@ -55,7 +55,7 @@ public class JobManager {
 		final KpiMonitor monitor = new KpiMonitor(config.getInt("kpi.interval"));
 
 		final Algorithm<? extends Board> algorithm = problem.algorithm().create(problem);
-		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), threadCount(), config.getInt("engine.dedupedepth"));
+		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), threadCount());
 		final SearchEngine<? extends Board> engine = new SearchEngine<>(algorithm, parameters);
 
 		engine.kpiReporters().forEach(monitor::addReporter);
@@ -72,10 +72,11 @@ public class JobManager {
 	}
 	
 	private int threadCount() {
-		if(config.getString("engine.threads").equalsIgnoreCase("max")) {
-			return Runtime.getRuntime().availableProcessors();
+		int threadCount = config.getInt("engine.threads");
+		if(threadCount <= 0) {
+			threadCount += Runtime.getRuntime().availableProcessors();
 		}
-		return config.getInt("engine.threads");
+		return threadCount;
 	}
 
 }

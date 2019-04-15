@@ -31,11 +31,14 @@ function preview() {
   postReq('problem', problem(), draw);
 };
 
-function list() {
+function list(callback) {
   getReq('problem', list => {
     o='';
     list.forEach( p => o+='<option value="{}">{}</option>'.replace(/{}/g, p));
     $('#list').html(o);
+    if(callback) {
+      callback();
+    }
   });
 };
 
@@ -50,8 +53,7 @@ function load() {
 function save() {
   name = val('name');
   putReq('problem/'+name, problem(), () => {
-    list();
-    val('list', name);
+    list(() => val('list', name));
     alert(name+' saved successfully!');
   });
 };

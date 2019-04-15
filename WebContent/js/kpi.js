@@ -3,46 +3,40 @@ var kpiOn=false;
 function toggleKpi() {
   kpiOn = !kpiOn;
   if(kpiOn) {
-    pollKpi();
+    showKpi();
   }
   else {
     closeKpi();
   }
 };
 
-function pollKpi() {
-  if(jobId && kpiOn) {
-    getReq('solve/'+jobId+'/kpi', kpi => {
-      if(kpi) {
-        showKpi(kpi);
-        setTimeout(pollKpi, 1000);
+function showKpi(kpi) {
+  if(!kpiOn) {
+    return;
+  }
+  if(kpi) {
+    singleKeys=[];
+    matrixKeys=[];
+    rows=0;
+
+    Object.keys(kpi).forEach(k => {
+      if(k.match(/\-\d+$/g)) {
+        i = k.lastIndexOf('-');
+        key = k.substr(0,i);
+        num = k.substr(i+1);
+        if(matrixKeys.indexOf(key) < 0) {
+          matrixKeys.push(key);
+        }
+        rows = Math.max(rows, num);
+      }
+      else {
+        singleKeys.push(k);
       }
     });
-  }
-};
 
-function showKpi(kpi) {
-  singleKeys=[];
-  matrixKeys=[];
-  rows=0;
-  
-  Object.keys(kpi).forEach(k => {
-    if(k.match(/\-\d+$/g)) {
-      i = k.lastIndexOf('-');
-      key = k.substr(0,i);
-      num = k.substr(i+1);
-      if(matrixKeys.indexOf(key) < 0) {
-        matrixKeys.push(key);
-      }
-      rows = Math.max(rows, num);
-    }
-    else {
-      singleKeys.push(k);
-    }
-  });
-  
-  showKeyVals(kpi, singleKeys);
-  showMatrix(kpi, matrixKeys, rows++);
+    showKeyVals(kpi, singleKeys);
+    showMatrix(kpi, matrixKeys, ++rows);
+  }
   
   $('#kpi').css('display','block');
 };

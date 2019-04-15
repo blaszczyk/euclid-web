@@ -10,15 +10,19 @@ function construct() {
 function pollSolution() {
   if(jobId) {
     getReq('solve/'+jobId, c => {
-      if(c) {
+      if(c.finished) {
         updateJobId();
-        draw(c);
-        if(c.length<=1)
+        if(c.construction) {
+          draw(c.construction);
+        }
+        else {
           alert('no solution');
         }
+      }
       else {
         setTimeout(pollSolution,1000);
       }
+      showKpi(c.kpi);
     });
   }
 };
@@ -28,7 +32,7 @@ function halt() {
 };
 
 function preview() {
-  postReq('problem', problem(), draw);
+  postReq('problem', problem(), b => draw([b]));
 };
 
 function list(callback) {

@@ -1,8 +1,6 @@
 package euclid.web;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -44,37 +42,21 @@ public class SolverEndpoint extends AbstractEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pollSolution(@PathParam("jobId") final String jobId) {
 		final Job job = jobManager.job(jobId);
-	
+		final KpiReport kpiReport = job.kpiReport();
+
+		final ConstructionDto constructionDto;
 		if(job.finished()) {
 			final List<? extends Board> solutions = job.solutions();
+			final Board solution = solutions.isEmpty() ? null : solutions.get(0);
 			final Problem problem = job.problem();
 			jobManager.removeJob(jobId);
-			final List<BoardDto> constructionDto;
-			if(solutions.isEmpty()) {
-				constructionDto = new BoardMapper(problem).map();
-			}
-			else {
-				constructionDto = new BoardMapper(problem).map(solutions.get(0));
-			}
-			return ok(constructionDto);
+			constructionDto = new BoardMapper(problem).mapConstruction(solution, kpiReport);
 		}
-		return ok();
-	}
-
-	@GET
-	@Path("/{jobId}/kpi")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response pollKpi(@PathParam("jobId") final String jobId) {
-		final Job job = jobManager.job(jobId);
-		if(job != null) {
-			final KpiReport report = job.kpiReport();
-			if(report != null) {
-				final Map<String,Number> keyValues = new LinkedHashMap<>();
-				report.items().forEach(i -> keyValues.put(i.name(), i.value()));
-				return ok(keyValues);
-			}
+		else
+		{
+			constructionDto = new BoardMapper().mapKpi(kpiReport);
 		}
-		return ok();
+		return ok(constructionDto);
 	}
 
 	@DELETE

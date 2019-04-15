@@ -3,7 +3,9 @@ package euclid.web;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import euclid.geometry.Circle;
@@ -12,6 +14,7 @@ import euclid.geometry.Line;
 import euclid.geometry.Number;
 import euclid.geometry.Point;
 import euclid.geometry.Segment;
+import euclid.kpi.KpiReport;
 import euclid.sets.*;
 import euclid.problem.Problem;
 import euclid.web.dto.*;
@@ -45,14 +48,26 @@ public class BoardMapper {
 			return "";
 		};
 	}
-
-	public List<BoardDto> map() {
-		final PointSet points = problem.initial().points().adjoin(problem.required().points());
-		final CurveSet curves = problem.initial().curves().adjoin(problem.required().curves());
-		return map(new Board(points, curves));
+	
+	public BoardMapper() {
+		this(null);
 	}
 
-	public List<BoardDto> map(final Board construction) {
+	public BoardDto mapPreview() {
+		final PointSet points = problem.initial().points().adjoin(problem.required().points());
+		final CurveSet curves = problem.initial().curves().adjoin(problem.required().curves());
+		return mapBoard(new Board(points, curves));
+	}
+
+	public ConstructionDto mapConstruction(final Board construction, final KpiReport report) {
+		return map(construction, report, true);
+	}
+
+	public ConstructionDto mapKpi(final KpiReport report) {
+		return map(null, report, false);
+	}
+
+	private ConstructionDto map(final Board construction, final KpiReport report, final boolean finished) {
 		final List<BoardDto> list = new ArrayList<>();
 		Board board = construction;
 		while(board != null) {
@@ -60,7 +75,14 @@ public class BoardMapper {
 			board = board.parent();
 		}
 		Collections.reverse(list);
-		return list;
+
+		final Map<String, java.lang.Number> keyValues = new LinkedHashMap<>();
+		if(report != null) {
+			report.items().forEach(i -> keyValues.put(i.name(), i.value()));
+		}
+		
+		return new ConstructionDto(list.isEmpty() ? null : list, 
+				keyValues.isEmpty() ? null : keyValues , finished);
 	}
 
 	private BoardDto mapBoard(final Board board) {

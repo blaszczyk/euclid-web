@@ -5,9 +5,11 @@ public class PointDto extends ElementDto {
 	private String y;
 	
 	public PointDto() {
+		super("point");
 	}
 	
 	public PointDto(String x, String y) {
+		this();
 		this.x = x;
 		this.y = y;
 	}

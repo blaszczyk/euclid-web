@@ -33,12 +33,7 @@ function draw(newConstruction) {
 function board(b) {
 	r='';
 	if(b) {
-		b.points.forEach( p => r+=point(p));
-		b.curves.forEach( c => {
-			if(c.type==="line") { r+=line(c); }
-			if(c.type==="segment") { r+=segment(c); }
-			if(c.type==="circle") { r+=circle(c); }
-	    });
+		b.forEach(e => r+=window[e.type](e));
 	}
 	return r;
 };

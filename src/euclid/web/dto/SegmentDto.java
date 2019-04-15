@@ -1,6 +1,7 @@
 package euclid.web.dto;
 
-public class SegmentDto extends CurveDto {
+public class SegmentDto extends ElementDto {
+
 	private PointDto from;
 	private PointDto to;
 	

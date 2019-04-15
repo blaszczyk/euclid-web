@@ -40,7 +40,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	public Response preview(final ProblemDto problemDto) {
 		final List<String> lines = ProblemMapper.map(problemDto);
 		final Problem problem =  new ProblemParser(lines).parse();
-		final BoardDto preview = new BoardMapper(problem).mapPreview();
+		final List<ElementDto> preview = new BoardMapper(problem).mapPreview();
 		return ok(preview);
 	}
 	

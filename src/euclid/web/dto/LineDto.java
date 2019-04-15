@@ -1,6 +1,7 @@
 package euclid.web.dto;
 
-public class LineDto extends CurveDto {
+public class LineDto extends ElementDto {
+	
 	private PointDto normal;
 	private String offset;
 	

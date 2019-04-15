@@ -1,9 +1,22 @@
 package euclid.web.dto;
 
-abstract class ElementDto {
+public abstract class ElementDto {
+
+	private String type;
 	
 	private String role = null;
+	
+	ElementDto(String type) {
+		this.type = type;
+	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 	public String getRole() {
 		return role;
 	}

@@ -1,6 +1,6 @@
 package euclid.web.dto;
 
-public class CircleDto extends CurveDto {
+public class CircleDto extends ElementDto {
 	
 	private PointDto center;
 	private String radius;

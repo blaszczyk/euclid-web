@@ -5,23 +5,23 @@ import java.util.Map;
 
 public class ConstructionDto {
 	
-	private List<BoardDto> construction;
+	private List<List<ElementDto>> construction;
 	
 	private Map<String, Number> kpi;
 	
 	private boolean finished;
 
-	public ConstructionDto(final List<BoardDto> construction, final Map<String, Number> kpi, final boolean finished) {
+	public ConstructionDto(final List<List<ElementDto>> construction, final Map<String, Number> kpi, final boolean finished) {
 		this.construction = construction;
 		this.kpi = kpi;
 		this.finished = finished;
 	}
 
-	public List<BoardDto> getConstruction() {
+	public List<List<ElementDto>> getConstruction() {
 		return construction;
 	}
 
-	public void setConstruction(List<BoardDto> construction) {
+	public void setConstruction(List<List<ElementDto>> construction) {
 		this.construction = construction;
 	}
 

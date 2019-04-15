@@ -53,7 +53,7 @@ public class BoardMapper {
 		this(null);
 	}
 
-	public BoardDto mapPreview() {
+	public List<ElementDto> mapPreview() {
 		final PointSet points = problem.initial().points().adjoin(problem.required().points());
 		final CurveSet curves = problem.initial().curves().adjoin(problem.required().curves());
 		return mapBoard(new Board(points, curves));
@@ -68,7 +68,7 @@ public class BoardMapper {
 	}
 
 	private ConstructionDto map(final Board construction, final KpiReport report, final boolean finished) {
-		final List<BoardDto> list = new ArrayList<>();
+		final List<List<ElementDto>> list = new ArrayList<>();
 		Board board = construction;
 		while(board != null) {
 			list.add(mapBoard(board));
@@ -85,16 +85,15 @@ public class BoardMapper {
 				keyValues.isEmpty() ? null : keyValues , finished);
 	}
 
-	private BoardDto mapBoard(final Board board) {
-		final List<PointDto> points = new ArrayList<>();
-		final List<CurveDto> curves = new ArrayList<>();
+	private List<ElementDto> mapBoard(final Board board) {
+		final List<ElementDto> boardDto = new ArrayList<>();
 		for(final Point point : board.points()) {
-			points.add(mapPoint(point));
+			boardDto.add(mapPoint(point));
 		}
 		for(final Curve curve : board.curves()) {
-			curves.add(mapCurve(curve));
+			boardDto.add(mapCurve(curve));
 		}
-		return new BoardDto(points, curves);
+		return boardDto;
 	}
 
 	private PointDto mapPoint(final Point point) {
@@ -104,8 +103,8 @@ public class BoardMapper {
 		return dto;
 	}
 	
-	private CurveDto mapCurve(final Curve curve) {
-		final CurveDto dto;
+	private ElementDto mapCurve(final Curve curve) {
+		final ElementDto dto;
 		if(curve.isLine()) {
 			final Line line = curve.asLine();
 			if(line.isSegment()) {
@@ -123,11 +122,11 @@ public class BoardMapper {
 		return dto;
 	}
 
-	private CurveDto mapLine(final Line line) {
+	private LineDto mapLine(final Line line) {
 		return new LineDto(mapPoint(line.normal()), mapNumber(line.offset()));
 	}
 
-	private CurveDto mapSegment(final Segment segment) {
+	private SegmentDto mapSegment(final Segment segment) {
 		final Point basePoint = segment.normal().mul(segment.offset());
 		final Point tangent = segment.normal().orth();
 		final Point from = basePoint.add(tangent.mul(segment.from()));
@@ -135,7 +134,7 @@ public class BoardMapper {
 		return new SegmentDto(mapPoint(from), mapPoint(to));
 	}
 
-	private CurveDto mapCircle(final Circle circle) {
+	private CircleDto mapCircle(final Circle circle) {
 		return new CircleDto(mapPoint(circle.center()), mapNumber(circle.radiusSquare().root()));
 	}
 	

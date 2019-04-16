@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -37,7 +38,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response preview(final ProblemDto problemDto) {
+	public Response preview(final Map<String,String> problemDto) {
 		final List<String> lines = ProblemMapper.map(problemDto);
 		final Problem problem =  new ProblemParser(lines).parse();
 		final List<ElementDto> preview = new BoardMapper(problem).mapPreview();
@@ -62,7 +63,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 		try {
 			final File file = file(name);
 			final List<String> lines = Files.readAllLines(file.toPath());
-			final ProblemDto problemDto = ProblemMapper.map(lines);
+			final Map<String,String> problemDto = ProblemMapper.map(lines);
 			return ok(problemDto);
 		}
 		catch (IOException e) {
@@ -73,7 +74,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/{name}")
-	public Response save(@PathParam("name") final String name, final ProblemDto problemDto) {
+	public Response save(@PathParam("name") final String name, final Map<String,String> problemDto) {
 		try {
 			final List<String> lines = ProblemMapper.map(problemDto);
 			final File file = file(name);

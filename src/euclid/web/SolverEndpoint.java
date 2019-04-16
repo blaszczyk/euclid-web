@@ -1,6 +1,8 @@
 package euclid.web;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -30,11 +32,11 @@ public class SolverEndpoint extends AbstractEndpoint {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response solve(final ProblemDto problemDto) {
+	public Response solve(final Map<String,String> problemDto) {
 		final List<String> lines = ProblemMapper.map(problemDto);
 		final Problem problem =  new ProblemParser(lines).parse();
 		final String jobId = jobManager.createAndStartJob(problem);
-		return ok(new JobIdDto(jobId));
+		return ok(Collections.singletonMap("jobId", jobId));
 	}
 
 	@GET

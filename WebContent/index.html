@@ -8,54 +8,68 @@
   <script type='text/javascript' src='js/ajax.js'></script>
   <script type='text/javascript' src='js/kpi.js'></script>
   <body>
-    <h1>Solve Problems in Euclidean Geometry</h1>
     <div>
-      <div id="result" style="float:left;">
+      <h1>Solve Problems in Euclidean Geometry</h1>
+      <div id="svg" style="float:left;">
 	    <svg width="800" height="800"></svg>
       </div>
       <div align="left" style="float:left;">
-        <div id="persistence">
-          <select id="list"></select>
-          <button id="load" accesskey="l">load</button>
-          <button id="del" accesskey="d">delete</button>
-          <br/>
-          <input id="name" type="text"></input>
-          <button id="save" accesskey="s">save</button>
+        <div>
+          <div>
+            <select id="list" style="width:300px;"></select>
+            <button id="load" accesskey="l">load</button>
+            <button id="del" accesskey="d">delete</button>
+          </div>
+          <div>
+            <input id="name" type="text" style="width:300px;"></input>
+            <button id="save" accesskey="s">save</button>
+          </div>
         </div>
-        <br/>
         <div id="problem">
-          variable definitions: <br/>
-          <textarea id="variables" rows="20" cols="60"></textarea>
-          <br/>
-          initial: <input id="initial" type="text"/>
-          <br/>
-          required: <input id="required" type="text"/>
-          <br/>
-          depth: <input id="maxdepth" type="text"/>
-          <select id="depthfirst">
-            <option value="false">breadth first</option>
-            <option value="true">depth first</option>
-          </select>
-          <select id="shuffle">
-            <option value="false">no shuffle</option>
-            <option value="true">shuffle</option>
-          </select>
-          <br/>
-          algorithm: 
-          <select id="algorithm">
-            <option value="CURVE_BASED">basic curve based search</option>
-            <option value="CURVE_ADVANCED">advanced curve based search</option>
-            <option value="CURVE_DEDUPE">deduplicating curve based search</option>
-            <option value="POINT_BASED">basic point based search</option>
-          </select>
-          <select id="priority">
-            <option value="COARSE">coarse prioritization</option>
-            <option value="FINE">fine prioritization</option>
-            <option value="FINEST">finest prioritization</option>
-            <option value="NO">no prioritization</option>
-          </select>
+          <div>variable definitions</div>
+          <div>
+            <textarea id="variables" rows="25" cols="60"></textarea>
+          </div>
+          <div>
+            <label>initial</label>
+            <input id="initial" type="text" style="width:300px;"/>
+          </div>
+          <div>
+            <label>required</label>
+            <input id="required" type="text" style="width:300px;"/>
+          </div>
+          <div>
+            <label>depth</label>
+            <input id="maxdepth" type="text" style="width:100px;"/>
+            <select id="depthfirst">
+              <option value="false">breadth first</option>
+              <option value="true">depth first</option>
+            </select>
+            <select id="shuffle">
+              <option value="false">no shuffle</option>
+              <option value="true">shuffle</option>
+            </select>
+          </div>
+          <div>
+            <label>algorithm</label>
+            <select id="algorithm">
+              <option value="CURVE_BASED">basic curve search</option>
+              <option value="CURVE_ADVANCED">advanced curve search</option>
+              <option value="CURVE_DEDUPE">deduplicating curve search</option>
+              <option value="POINT_BASED">basic point search</option>
+            </select>
+            <select id="priority">
+              <option value="COARSE">coarse priority</option>
+              <option value="FINE">fine priority</option>
+              <option value="FINEST">finest priority</option>
+              <option value="NO">no priority</option>
+            </select>
+            <select id="curveidentification">
+              <option value="SEGMENT_IS_NOT_LINE">segment != line</option>
+              <option value="SEGMENT_IS_LINE">segment == line</option>
+            </select>
+          </div>
         </div>
-        <br/>
         <div id="controls">
           <button id="preview" accesskey="p">preview</button>
           <button id="construct" accesskey="c">construct</button>
@@ -63,12 +77,14 @@
           <button id="prev" accesskey="r" style="width:15pt;">&lt;</button>
           <button id="next" accesskey="t" style="width:15pt;">&gt;</button>
         </div>
-        <button id="toggleKpi" accesskey="k">kpi</button>
+        <div>
+          <button id="toggleKpi" accesskey="k">kpi</button>
+        </div>
       </div>
-      <div id="kpi" style="position:absolute;left:100px;top:100px;background-color:rgba(255,255,255,1);border-style:solid;display:none;">
-        <table id="kpi-key-vals"></table>
-        <table id="kpi-matrix"></table>
-      </div>
+    </div>
+    <div id="kpi" style="position:absolute;left:100px;top:100px;background-color:rgba(255,255,255,1);border-style:solid;display:none;">
+      <table id="kpi-key-vals"></table>
+      <table id="kpi-matrix"></table>
     </div>
   </body>
 </html>

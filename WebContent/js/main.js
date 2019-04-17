@@ -71,7 +71,7 @@ function del() {
 
 function problem() {
   p = {};
-  $('#problem').children()
+  $('#problem').children().children()
     .filter((i,c) => c.id)
     .map((i,c) => c.id)
     .each((i,id) => p[id]=val(id));

@@ -27,7 +27,7 @@ function draw(newConstruction) {
   svg = '<svg width="'+width+'" height="'+height+'">'
   svg += board(construction[step]);
   svg += '</svg>';
-  $('#result').html(svg)
+  $('#svg').html(svg)
 };
 
 function board(b) {

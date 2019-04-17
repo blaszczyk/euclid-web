@@ -77,6 +77,7 @@ public class ProblemEndpoint extends AbstractEndpoint {
 	public Response save(@PathParam("name") final String name, final Map<String,String> problemDto) {
 		try {
 			final List<String> lines = ProblemMapper.map(problemDto);
+			new ProblemParser(lines).parse();
 			final File file = file(name);
 			Files.write(file.toPath(), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 			return ok();

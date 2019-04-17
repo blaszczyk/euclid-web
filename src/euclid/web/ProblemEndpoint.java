@@ -44,18 +44,18 @@ public class ProblemEndpoint extends AbstractEndpoint {
 		final List<ElementDto> preview = new BoardMapper(problem).mapPreview();
 		return ok(preview);
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response list(@QueryParam("search") final String searchTerm) {
 		final List<String> files = Arrays.stream(problemsDir().list())
 				.filter(f -> f.endsWith(".euclid"))
 				.map(f -> f.substring(0, f.lastIndexOf('.')))
-				.filter(f -> searchTerm == null || f.contains(searchTerm))
+				.filter(f -> searchTerm == null || f.toLowerCase().contains(searchTerm.toLowerCase()))
 				.collect(Collectors.toList());
 		return ok(files);
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{name}")

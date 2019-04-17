@@ -35,8 +35,9 @@ function preview() {
   postReq('problem', problem(), b => draw([b]));
 };
 
-function list(callback) {
-  getReq('problem', list => {
+function list(filter, callback) {
+  search = filter ? '?search='+encodeURIComponent(filter) : '';
+  getReq('problem'+search, list => {
     o='';
     list.forEach( p => o+='<option value="{}">{}</option>'.replace(/{}/g, p));
     $('#list').html(o);
@@ -44,6 +45,11 @@ function list(callback) {
       callback();
     }
   });
+};
+
+function filter() {
+  search = val('name');
+  list(search);
 };
 
 function load() {
@@ -57,7 +63,7 @@ function load() {
 function save() {
   name = val('name');
   putReq('problem/'+name, problem(), () => {
-    list(() => val('list', name));
+    list('',() => val('list', name));
     alert(name+' saved successfully!');
   });
 };

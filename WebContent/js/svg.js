@@ -39,7 +39,7 @@ function board(b) {
 };
 
 function point(p) {
-  return '<circle cx="'+scaleX(p.x)+'" cy="'+scaleY(p.y)+'" r="5" stroke="black" stroke-width="1" fill="'+color(p)+'"/>';
+  return '<circle cx="'+scaleX(p.x)+'" cy="'+scaleY(p.y)+'" r="4" stroke="black" stroke-width="1" fill="'+color(p)+'"/>';
 };
 
 function line(l) {

@@ -42,31 +42,38 @@ function showKpi(kpi) {
 };
 
 function showKeyVals(kpi, keys) {
-  kvs='';
+  trs='';
   keys.forEach(k => {
-    kvs+='<tr><td>'+k+'</td><td>'+format(kpi[k])+'</td></tr>';
+    tds=wrap('td',k)+wrapf('td',kpi[k]);
+    trs+=wrap('tr',tds);
   });
-  $('#kpi-key-vals').html(kvs);
+  $('#kpi-key-vals').html(trs);
 };
 
 function showMatrix(kpi, keys, rows) {
-  matrix='<tr>';
+  trs='';
+  ths='';
   keys.forEach(k => {
-    matrix+='<th>'+k+'</th>';
+    ths+=wrap('th',k);
   });
-  matrix+='</tr>';
+  trs+=wrap('tr',ths);
   for(var i = 0; i < rows; i++) {
-    matrix+='<tr>';
+    tds='';
     keys.forEach(k => {
-      matrix+='<td>'+format(kpi[k+'-'+i])+'</td>';
+      tds+=wrapf('td',kpi[k+'-'+i]);
     });
-    matrix+='</tr>';
+    trs+=wrap('tr',tds);
   }
-  $('#kpi-matrix').html(matrix);
+  $('#kpi-matrix').html(trs);
 };
 
-function format(num) {
-  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+function wrap(element,content) {
+  return '<'+element+'>'+content+'</'+element+'>';
+};
+
+function wrapf(element,number) {
+  content = number.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  return wrap(element,content);
 };
 
 function closeKpi() {

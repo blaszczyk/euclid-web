@@ -13,6 +13,7 @@ import euclid.geometry.Curve;
 import euclid.geometry.Line;
 import euclid.geometry.Number;
 import euclid.geometry.Point;
+import euclid.geometry.Ray;
 import euclid.geometry.Segment;
 import euclid.kpi.KpiReport;
 import euclid.sets.*;
@@ -97,17 +98,24 @@ public class BoardMapper {
 	}
 
 	private PointDto mapPoint(final Point point) {
-		final PointDto dto = new PointDto(mapNumber(point.x()), mapNumber(point.y()));
+		final PointDto dto = mapInternalPoint(point);
 		final String role = pointRoleRetriever.apply(point);
 		dto.setRole(role);
 		return dto;
+	}
+
+	private PointDto mapInternalPoint(final Point point) {
+		return new PointDto(mapNumber(point.x()), mapNumber(point.y()));
 	}
 	
 	private ElementDto mapCurve(final Curve curve) {
 		final ElementDto dto;
 		if(curve.isLine()) {
 			final Line line = curve.asLine();
-			if(line.isSegment()) {
+			if(line.isRay()) {
+				dto = mapRay(line.asRay());
+			}
+			else if(line.isSegment()) {
 				dto = mapSegment(line.asSegment());
 			}
 			else {
@@ -123,7 +131,14 @@ public class BoardMapper {
 	}
 
 	private LineDto mapLine(final Line line) {
-		return new LineDto(mapPoint(line.normal()), mapNumber(line.offset()));
+		return new LineDto(mapInternalPoint(line.normal()), mapNumber(line.offset()));
+	}
+
+	private RayDto mapRay(final Ray ray) {
+		final Point tangent = ray.normal().orth();
+		final Point end = ray.normal().mul(ray.offset()).add(tangent.mul(ray.end()));
+		final Point direction = ray.orientation() ? tangent : tangent.negate(); 
+		return new RayDto(mapInternalPoint(end), mapInternalPoint(direction));
 	}
 
 	private SegmentDto mapSegment(final Segment segment) {
@@ -131,11 +146,11 @@ public class BoardMapper {
 		final Point tangent = segment.normal().orth();
 		final Point from = basePoint.add(tangent.mul(segment.from()));
 		final Point to = basePoint.add(tangent.mul(segment.to()));
-		return new SegmentDto(mapPoint(from), mapPoint(to));
+		return new SegmentDto(mapInternalPoint(from), mapInternalPoint(to));
 	}
 
 	private CircleDto mapCircle(final Circle circle) {
-		return new CircleDto(mapPoint(circle.center()), mapNumber(circle.radiusSquare().root()));
+		return new CircleDto(mapInternalPoint(circle.center()), mapNumber(circle.radiusSquare().root()));
 	}
 	
 	private String mapNumber(final Number number) {

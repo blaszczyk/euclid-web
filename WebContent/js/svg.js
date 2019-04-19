@@ -50,8 +50,6 @@ function point(p) {
 };
 
 function line(l) {
-  ps=[];
-  
   dx = width / scale / 2;
   dy = height / scale / 2;
   nx=l.normal.x*1;
@@ -59,7 +57,8 @@ function line(l) {
   o=l.offset*1;
   nxdx = nx*dx;
   nydy = ny*dy;
-  
+
+  ps=[];
   if(Math.abs(o-nydy)<=Math.abs(nxdx))
     ps.push({x:(o-nydy)/nx, y:dy});
   if(Math.abs(o+nydy)<=Math.abs(nxdx))
@@ -68,6 +67,7 @@ function line(l) {
     ps.push({x:dx, y:(o-nxdx)/ny});
   if(Math.abs(o+nxdx)<Math.abs(nydy))
     ps.push({x:-dx, y:(o+nxdx)/ny});
+  
   if(ps.length == 2) {
     return element('line',{
       'x1':scaleX(ps[0].x),
@@ -79,6 +79,37 @@ function line(l) {
     });
   }
   console.log('out of bounds: ' + JSON.stringify(l));
+};
+
+function ray(r) {
+  dx = width / scale / 2;
+  dy = height / scale / 2;
+  ex = Number(r.end.x);
+  ey = Number(r.end.y);
+  dirx = Number(r.direction.x);
+  diry = Number(r.direction.y);
+
+  p=null;
+  if((+dx-ex)*dirx>0 && Math.abs(ey+(+dx-ex)*diry/dirx)<=dy)
+	    p={x:+dx, y:ey+(+dx-ex)*diry/dirx};
+  if((-dx-ex)*dirx>0 && Math.abs(ey+(-dx-ex)*diry/dirx)<=dy)
+	    p={x:-dx, y:ey+(-dx-ex)*diry/dirx};
+  if((+dy-ey)*diry>0 && Math.abs(ex+(+dy-ey)*dirx/diry)<=dx)
+	    p={x:ex+(+dy-ey)*dirx/diry, y:+dy};
+  if((-dy-ey)*diry>0 && Math.abs(ex+(-dy-ey)*dirx/diry)<=dx)
+	    p={x:ex+(-dy-ey)*dirx/diry, y:-dy};
+
+  if(p) {
+    return element('line',{
+        'x1':scaleX(r.end.x),
+        'y1':scaleY(r.end.y),
+        'x2':scaleX(p.x),
+        'y2':scaleY(p.y),
+        'stroke':color(r),
+        'stroke-width':2
+      });
+  }
+  console.log('out of bounds: ' + JSON.stringify(r));
 };
 
 function segment(s) {

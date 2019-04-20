@@ -31,7 +31,7 @@ import euclid.web.dto.*;
 @Path("/problem")
 public class ProblemEndpoint extends AbstractEndpoint {
 	
-	@Inject()
+	@Inject
 	@Named("root-dir")
 	private File rootDir;
 

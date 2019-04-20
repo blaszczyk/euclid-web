@@ -3,11 +3,11 @@ var jobId;
 function construct() {
   postReq('solve', problem(), jId => {
 		updateJobId(jId.jobId);
-		setTimeout(pollSolution,1000);
+		poll();
   });
 };
 
-function pollSolution() {
+function poll() {
   if(jobId) {
     getReq('solve/'+jobId, c => {
       if(c.finished) {
@@ -20,7 +20,7 @@ function pollSolution() {
         }
       }
       else {
-        setTimeout(pollSolution,1000);
+        setTimeout(poll,1000);
       }
       showKpi(c.kpi);
     });

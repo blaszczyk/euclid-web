@@ -55,7 +55,8 @@ public class JobManager {
 		final KpiMonitor monitor = new KpiMonitor(config.getInt("kpi.interval"));
 
 		final Algorithm<? extends Board> algorithm = problem.algorithm().create(problem);
-		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), problem.shuffle(), threadCount());
+		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), problem.shuffle(),
+				threadCount(),config.getInt("engine.bunchsize"));
 		final SearchEngine<? extends Board> engine = new SearchEngine<>(algorithm, parameters);
 
 		engine.kpiReporters().forEach(monitor::addReporter);

@@ -131,6 +131,13 @@ function circle(c) {
     'stroke':color(c),
     'stroke-width':2,
     'fill':'transparent'
+  }) + element('circle',{
+	    'cx':scaleX(c.center.x),
+	    'cy':scaleY(c.center.y),
+	    'r':'5',
+	    'stroke':'blue',
+	    'stroke-width':1,
+	    'fill':'transparent'
   });
 };
 

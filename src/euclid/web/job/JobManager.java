@@ -56,7 +56,7 @@ public class JobManager {
 
 		final Algorithm<? extends Board> algorithm = problem.algorithm().create(problem);
 		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), problem.shuffle(),
-				threadCount(),config.getInt("engine.bunchsize"));
+				threadCount(),config.getInt("engine.bunchsize"), config.getInt("engine.maxqueuesize"));
 		final SearchEngine<? extends Board> engine = new SearchEngine<>(algorithm, parameters);
 
 		engine.kpiReporters().forEach(monitor::addReporter);

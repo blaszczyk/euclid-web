@@ -1,5 +1,6 @@
 $(document).ajaxError( (e,f,g) => {
   updateJobId();
+  updatePSButtons();
   console.log(e,f,g);
   if(f.responseText)
     alert(f.responseText);

@@ -1,30 +1,36 @@
 var jobId;
 
-function construct() {
+function postJob(onFinished) {
   postReq('solve', problem(), jId => {
-		updateJobId(jId.jobId);
-		poll();
+    updateJobId(jId.jobId);
+    pollJob(onFinished);
   });
 };
 
-function poll() {
+function pollJob(onFinished) {
   if(jobId) {
     getReq('solve/'+jobId, c => {
       if(c.finished) {
         updateJobId();
-        if(c.construction) {
-          draw(c.construction);
-        }
-        else {
-          alert('no solution');
-        }
+        onFinished(c);
       }
       else {
-        setTimeout(poll,1000);
+        setTimeout(() => pollJob(onFinished), 1000);
       }
       showKpi(c.kpi);
     });
   }
+};
+
+function construct() {
+  postJob(c => {
+    if(c.construction) {
+      draw(c.construction);
+    }
+    else {
+      alert('no solution');
+    }
+  });
 };
 
 function halt() {

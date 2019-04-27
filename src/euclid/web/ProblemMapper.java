@@ -17,7 +17,7 @@ public class ProblemMapper {
 	private static final String KEY_VARIABLES = "variables";
 	
 	private static final Set<String> PARSER_KEYS = new HashSet<>(Arrays.asList(KEY_INITIAL, KEY_REQUIRED, KEY_MAX_DEPTH, KEY_DEPTH_FIRST,
-			KEY_SHUFFLE, KEY_ALGORITHM, KEY_PRIORITY, KEY_CURVE_IDENTIFIACTION));
+			KEY_SHUFFLE, KEY_ALGORITHM, KEY_CONSTRUCTOR, KEY_PRIORITY, KEY_CURVE_IDENTIFIACTION));
 
 	public static List<String> map(final Map<String,String> problemDto) {
 		final List<String> lines = new ArrayList<>();

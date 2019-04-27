@@ -100,7 +100,7 @@ public class BoardMapper {
 	private PointDto mapPoint(final Point point) {
 		final PointDto dto = mapInternalPoint(point);
 		final String role = pointRoleRetriever.apply(point);
-		dto.setRole(role);
+		dto.put("role", role);
 		return dto;
 	}
 
@@ -126,19 +126,26 @@ public class BoardMapper {
 			dto = mapCircle(curve.asCircle());
 		}
 		final String role = curveRoleRetriever.apply(curve);
-		dto.setRole(role);
+		dto.put("role", role);
 		return dto;
 	}
 
 	private LineDto mapLine(final Line line) {
-		return new LineDto(mapInternalPoint(line.normal()), mapNumber(line.offset()));
+		final String nx = mapNumber(line.normal().x());
+		final String ny = mapNumber(line.normal().y());
+		final String offset = mapNumber(line.offset());
+		return new LineDto(nx, ny, offset);
 	}
 
 	private RayDto mapRay(final Ray ray) {
 		final Point tangent = ray.normal().orth();
 		final Point end = ray.normal().mul(ray.offset()).add(tangent.mul(ray.end()));
-		final Point direction = ray.orientation() ? tangent : tangent.negate(); 
-		return new RayDto(mapInternalPoint(end), mapInternalPoint(direction));
+		final Point direction = ray.orientation() ? tangent : tangent.negate();
+		final String ex = mapNumber(end.x());
+		final String ey = mapNumber(end.y());
+		final String dx = mapNumber(direction.x());
+		final String dy = mapNumber(direction.y());
+		return new RayDto(ex, ey, dx, dy);
 	}
 
 	private SegmentDto mapSegment(final Segment segment) {
@@ -146,11 +153,18 @@ public class BoardMapper {
 		final Point tangent = segment.normal().orth();
 		final Point from = basePoint.add(tangent.mul(segment.from()));
 		final Point to = basePoint.add(tangent.mul(segment.to()));
-		return new SegmentDto(mapInternalPoint(from), mapInternalPoint(to));
+		final String x1 = mapNumber(from.x());
+		final String y1 = mapNumber(from.y());
+		final String x2 = mapNumber(to.x());
+		final String y2 = mapNumber(to.y());
+		return new SegmentDto(x1, y1, x2, y2);
 	}
 
 	private CircleDto mapCircle(final Circle circle) {
-		return new CircleDto(mapInternalPoint(circle.center()), mapNumber(circle.radiusSquare().root()));
+		final String cx = mapNumber(circle.center().x());
+		final String cy = mapNumber(circle.center().y());
+		final String radius = mapNumber(circle.radiusSquare().root());
+		return new CircleDto(cx, cy, radius);
 	}
 	
 	private String mapNumber(final Number number) {

@@ -1,32 +1,18 @@
 package euclid.web.dto;
 
+
+@SuppressWarnings("serial")
 public class LineDto extends ElementDto {
-	
-	private PointDto normal;
-	private String offset;
 	
 	public LineDto() {
 		super("line");
 	}
 	
-	public LineDto(PointDto normal, String offset) {
+	public LineDto(final String nx, final String ny, final String offset) {
 		this();
-		this.normal = normal;
-		this.offset = offset;
+		put("nx", nx);
+		put("ny", ny);
+		put("offset", offset);
 	}
 
-	public PointDto getNormal() {
-		return normal;
-	}
-	public void setNormal(PointDto normal) {
-		this.normal = normal;
-	}
-	public String getOffset() {
-		return offset;
-	}
-	public void setOffset(String offset) {
-		this.offset = offset;
-	}
-
-	
 }

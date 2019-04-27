@@ -50,23 +50,23 @@ function point(p) {
 };
 
 function line(l) {
-  dx = width / scale / 2;
-  dy = height / scale / 2;
-  nx=l.normal.x*1;
-  ny=l.normal.y*1;
+  xm = width / scale / 2;
+  ym = height / scale / 2;
+  nx=l.nx*1;
+  ny=l.ny*1;
   o=l.offset*1;
-  nxdx = nx*dx;
-  nydy = ny*dy;
+  nxxm = nx*xm;
+  nyym = ny*ym;
 
   ps=[];
-  if(Math.abs(o-nydy)<=Math.abs(nxdx))
-    ps.push({x:(o-nydy)/nx, y:dy});
-  if(Math.abs(o+nydy)<=Math.abs(nxdx))
-    ps.push({x:(o+nydy)/nx, y:-dy});
-  if(Math.abs(o-nxdx)<Math.abs(nydy))
-    ps.push({x:dx, y:(o-nxdx)/ny});
-  if(Math.abs(o+nxdx)<Math.abs(nydy))
-    ps.push({x:-dx, y:(o+nxdx)/ny});
+  if(Math.abs(o-nyym)<=Math.abs(nxxm))
+    ps.push({x:(o-nyym)/nx, y:ym});
+  if(Math.abs(o+nyym)<=Math.abs(nxxm))
+    ps.push({x:(o+nyym)/nx, y:-ym});
+  if(Math.abs(o-nxxm)<Math.abs(nyym))
+    ps.push({x:xm, y:(o-nxxm)/ny});
+  if(Math.abs(o+nxxm)<Math.abs(nyym))
+    ps.push({x:-xm, y:(o+nxxm)/ny});
   
   if(ps.length == 2) {
     return element('line',{
@@ -82,27 +82,27 @@ function line(l) {
 };
 
 function ray(r) {
-  dx = width / scale / 2;
-  dy = height / scale / 2;
-  ex = Number(r.end.x);
-  ey = Number(r.end.y);
-  dirx = Number(r.direction.x);
-  diry = Number(r.direction.y);
+  xm = width / scale / 2;
+  ym = height / scale / 2;
+  ex = r.ex*1;
+  ey = r.ey*1;
+  dx = r.dx*1;
+  dy = r.dy*1;
 
   p=null;
-  if((+dx-ex)*dirx>0 && Math.abs(ey+(+dx-ex)*diry/dirx)<=dy)
-	    p={x:+dx, y:ey+(+dx-ex)*diry/dirx};
-  if((-dx-ex)*dirx>0 && Math.abs(ey+(-dx-ex)*diry/dirx)<=dy)
-	    p={x:-dx, y:ey+(-dx-ex)*diry/dirx};
-  if((+dy-ey)*diry>0 && Math.abs(ex+(+dy-ey)*dirx/diry)<=dx)
-	    p={x:ex+(+dy-ey)*dirx/diry, y:+dy};
-  if((-dy-ey)*diry>0 && Math.abs(ex+(-dy-ey)*dirx/diry)<=dx)
-	    p={x:ex+(-dy-ey)*dirx/diry, y:-dy};
+  if((+xm-ex)*dx>0 && Math.abs(ey+(+xm-ex)*dy/dx)<=ym)
+	    p={x:+xm, y:ey+(+xm-ex)*dy/dx};
+  if((-xm-ex)*dx>0 && Math.abs(ey+(-xm-ex)*dy/dx)<=ym)
+	    p={x:-xm, y:ey+(-xm-ex)*dy/dx};
+  if((+ym-ey)*dy>0 && Math.abs(ex+(+ym-ey)*dx/dy)<=xm)
+	    p={x:ex+(+ym-ey)*dx/dy, y:+ym};
+  if((-ym-ey)*dy>0 && Math.abs(ex+(-ym-ey)*dx/dy)<=xm)
+	    p={x:ex+(-ym-ey)*dx/dy, y:-ym};
 
   if(p) {
     return element('line',{
-        'x1':scaleX(r.end.x),
-        'y1':scaleY(r.end.y),
+        'x1':scaleX(r.ex),
+        'y1':scaleY(r.ey),
         'x2':scaleX(p.x),
         'y2':scaleY(p.y),
         'stroke':color(r),
@@ -114,10 +114,10 @@ function ray(r) {
 
 function segment(s) {
   return element('line',{
-    'x1':scaleX(s.from.x),
-    'y1':scaleY(s.from.y),
-    'x2':scaleX(s.to.x),
-    'y2':scaleY(s.to.y),
+    'x1':scaleX(s.x1),
+    'y1':scaleY(s.y1),
+    'x2':scaleX(s.x2),
+    'y2':scaleY(s.y2),
     'stroke':color(s),
     'stroke-width':2
   });
@@ -125,15 +125,15 @@ function segment(s) {
 
 function circle(c) {
   return element('circle',{
-    'cx':scaleX(c.center.x),
-    'cy':scaleY(c.center.y),
+    'cx':scaleX(c.cx),
+    'cy':scaleY(c.cy),
     'r':c.radius*scale,
     'stroke':color(c),
     'stroke-width':2,
     'fill':'transparent'
   }) + element('circle',{
-	    'cx':scaleX(c.center.x),
-	    'cy':scaleY(c.center.y),
+	    'cx':scaleX(c.cx),
+	    'cy':scaleY(c.cy),
 	    'r':'5',
 	    'stroke':'blue',
 	    'stroke-width':1,

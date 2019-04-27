@@ -1,34 +1,18 @@
 package euclid.web.dto;
 
+@SuppressWarnings("serial")
 public class RayDto extends ElementDto {
-
-	private PointDto end;
-	private PointDto direction;
 	
 	public RayDto() {
 		super("ray");
 	}
 
-	public RayDto(PointDto end, PointDto direction) {
+	public RayDto(final String ex, final String ey, final String dx, final String dy) {
 		this();
-		this.end = end;
-		this.direction = direction;
-	}
-
-	public PointDto getEnd() {
-		return end;
-	}
-
-	public void setEnd(PointDto end) {
-		this.end = end;
-	}
-
-	public PointDto getDirection() {
-		return direction;
-	}
-
-	public void setDirection(PointDto direction) {
-		this.direction = direction;
+		put("ex", ex);
+		put("ey", ey);
+		put("dx", dx);
+		put("dy", dy);
 	}
 
 }

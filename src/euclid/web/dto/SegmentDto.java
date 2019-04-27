@@ -1,34 +1,18 @@
 package euclid.web.dto;
 
+@SuppressWarnings("serial")
 public class SegmentDto extends ElementDto {
-
-	private PointDto from;
-	private PointDto to;
 	
 	public SegmentDto() {
 		super("segment");
 	}
 
-	public SegmentDto(PointDto from, PointDto to) {
+	public SegmentDto(final String x1, final String y1, final String x2, final String y2) {
 		this();
-		this.from = from;
-		this.to = to;
+		put("x1", x1);
+		put("y1", y1);
+		put("x2", x2);
+		put("y2", y2);
 	}
 
-	public PointDto getFrom() {
-		return from;
-	}
-
-	public void setFrom(PointDto from) {
-		this.from = from;
-	}
-
-	public PointDto getTo() {
-		return to;
-	}
-
-	public void setTo(PointDto to) {
-		this.to = to;
-	}
-	
 }

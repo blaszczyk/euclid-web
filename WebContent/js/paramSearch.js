@@ -10,7 +10,6 @@ function toggleParamSearch() {
 function start() {
   current=0;
   initBackup = val('initial');
-  updatePSButtons(true);
   tryNext();
 };
 
@@ -25,7 +24,7 @@ function abort() {
 
 function tryNext() {
   val('initial', initBackup + currentPoint());
-  $('#start').html(current);
+  updatePSButtons(true);
   preview();
   postJob(c => {
     if(c.construction) {
@@ -53,11 +52,11 @@ function currentPoint() {
   return ' :p('+x+','+y+')';
 };
 
-function updatePSButtons(enable) {
-  $('#start').html('start');
-  $('#start').attr('disabled',!!enable);
-  $('#skip').attr('disabled',!enable);
-  $('#abort').attr('disabled',!enable);
+function updatePSButtons(running) {
+  $('#start').html(running ? current : 'start');
+  $('#start').attr('disabled',!!running);
+  $('#skip').attr('disabled',!running);
+  $('#abort').attr('disabled',!running);
 };
 
 function numVal(id) {

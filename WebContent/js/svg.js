@@ -1,41 +1,77 @@
+var initial;
+var required;
 var construction;
 var step=0;
 
 function prev() {
-  if(step>0) {
+  if(step>=0) {
 	  step--;
 	  draw();
   }
-}
+};
 
 function next() {
-  if(step<construction.length-1) {
+  if(step<construction.length) {
 	  step++;
 	  draw();
   }
-}
+};
 
 var width = 800;
 var height = 800;
 var scale = 100;
 
-function draw(newConstruction) {
-  if(newConstruction) {
-	  construction = newConstruction;
-	  step = construction.length-1;
+function draw(update) {
+  if(update) {
+	  initial = update.initial;
+	  required = update.required;
+	  construction = update.construction;
+	  step = construction ? construction.length : 0;
   }
   svg = '<svg width="'+width+'" height="'+height+'">'
-  svg += board(construction[step]);
+  svg += board();
   svg += '</svg>';
   $('#svg').html(svg)
 };
 
-function board(b) {
-	r='';
-	if(b) {
-		b.forEach(e => r+=window[e.type](e));
-	}
-	return r;
+function board() {
+  svg='';
+  if(!construction) {
+    svg+=mapElements(initial,'green');
+    svg+=mapElements(required,'red');
+  }
+  else if(step < 0) {
+    svg+=mapElements(initial,'lightgray');
+  }
+  else if(step < construction.length) {
+    svg+=mapElements(initial,'lightgray');
+    for(i=0; i<step; i++) {
+      svg+=mapElement(construction[i].curve,'lightgray');
+      svg+=mapElements(construction[i].constituents,'lightgray');
+    }
+    svg+=mapElement(construction[step].curve,'black');
+    svg+=mapElements(construction[step].constituents,'blue');
+  }
+  else {
+    construction.forEach(c => {
+      svg+=mapElement(c.curve,'lightgray');
+      svg+=mapElements(c.constituents,'lightgray');
+    });
+    svg+=mapElements(initial,'green');
+    svg+=mapElements(required,'red');
+  }
+  return svg;
+};
+
+function mapElements(elements,color) {
+  svg='';
+  elements.forEach(e => svg+=mapElement(e,color));
+  return svg;
+};
+
+function mapElement(element,color) {
+  element.color=color;
+  return window[element.type](element);
 };
 
 function point(p) {
@@ -45,7 +81,7 @@ function point(p) {
     'r':'4',
     'stroke':'black',
     'stroke-width':1,
-    'fill':color(p)
+    'fill':p.color
   });
 };
 
@@ -74,7 +110,7 @@ function line(l) {
       'y1':scaleY(ps[0].y),
       'x2':scaleX(ps[1].x),
       'y2':scaleY(ps[1].y),
-      'stroke':color(l),
+      'stroke':l.color,
       'stroke-width':2
     });
   }
@@ -105,7 +141,7 @@ function ray(r) {
         'y1':scaleY(r.ey),
         'x2':scaleX(p.x),
         'y2':scaleY(p.y),
-        'stroke':color(r),
+        'stroke':r.color,
         'stroke-width':2
       });
   }
@@ -118,7 +154,7 @@ function segment(s) {
     'y1':scaleY(s.y1),
     'x2':scaleX(s.x2),
     'y2':scaleY(s.y2),
-    'stroke':color(s),
+    'stroke':s.color,
     'stroke-width':2
   });
 };
@@ -128,29 +164,16 @@ function circle(c) {
     'cx':scaleX(c.cx),
     'cy':scaleY(c.cy),
     'r':c.radius*scale,
-    'stroke':color(c),
+    'stroke':c.color,
     'stroke-width':2,
     'fill':'transparent'
-  }) + element('circle',{
-	    'cx':scaleX(c.cx),
-	    'cy':scaleY(c.cy),
-	    'r':'5',
-	    'stroke':'blue',
-	    'stroke-width':1,
-	    'fill':'transparent'
   });
 };
 
 function element(name, attrs) {
-	res='<'+name;
-	Object.keys(attrs).forEach(k => res +=' '+k+'="'+attrs[k]+'"');
-	return res+'/>';
-};
-
-function color(e) {
-	if(e.role === 'initial') return 'green';
-	if(e.role === 'required') return 'red';
-	return 'lightgray';
+  res='<'+name;
+  Object.keys(attrs).forEach(k => res +=' '+k+'="'+attrs[k]+'"');
+  return res+'/>';
 };
 
 function scaleX(x) {

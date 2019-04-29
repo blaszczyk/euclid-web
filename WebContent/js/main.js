@@ -25,7 +25,7 @@ function pollJob(onFinished) {
 function construct() {
   postJob(c => {
     if(c.construction) {
-      draw(c.construction);
+      draw(c);
     }
     else {
       alert('no solution');
@@ -38,7 +38,7 @@ function halt() {
 };
 
 function preview() {
-  postReq('problem', problem(), b => draw([b]));
+  postReq('problem', problem(), draw);
 };
 
 function list(filter, callback) {

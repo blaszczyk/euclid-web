@@ -46,19 +46,19 @@ public class SolverEndpoint extends AbstractEndpoint {
 		final Job job = jobManager.job(jobId);
 		final KpiReport kpiReport = job.kpiReport();
 
-		final ConstructionDto constructionDto;
+		final ContainerDto containerDto;
 		if(job.finished()) {
 			final List<? extends Board> solutions = job.solutions();
 			final Board solution = solutions.isEmpty() ? null : solutions.get(0);
 			final Problem problem = job.problem();
 			jobManager.removeJob(jobId);
-			constructionDto = new BoardMapper(problem).mapConstruction(solution, kpiReport);
+			containerDto = new BoardMapper(problem).mapConstruction(solution, kpiReport);
 		}
 		else
 		{
-			constructionDto = new BoardMapper().mapKpi(kpiReport);
+			containerDto = new BoardMapper().mapKpiReport(kpiReport);
 		}
-		return ok(constructionDto);
+		return ok(containerDto);
 	}
 
 	@DELETE

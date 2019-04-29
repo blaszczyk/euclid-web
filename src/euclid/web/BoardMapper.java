@@ -2,12 +2,11 @@ package euclid.web;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
+import euclid.algorithm.Reconstruction;
 import euclid.geometry.Circle;
 import euclid.geometry.Curve;
 import euclid.geometry.Line;
@@ -22,72 +21,65 @@ import euclid.web.dto.*;
 
 public class BoardMapper {
 	
-	private final Function<Point, String> pointRoleRetriever;
-	
-	private final Function<Curve, String> curveRoleRetriever;
-	
 	private final Problem problem;
 
 	public BoardMapper(final Problem problem) {
 		this.problem = problem;
-		pointRoleRetriever = point -> {
-			if(problem.initial().points().contains(point)) {
-				return "initial";
-			}
-			if(problem.required().points().contains(point)) {
-				return "required";
-			}
-			return "";
-		};
-		curveRoleRetriever = curve -> {
-			if(problem.initial().curves().contains(curve)) {
-				return "initial";
-			}
-			if(problem.required().curves().contains(curve)) {
-				return "required";
-			}
-			return "";
-		};
 	}
 	
 	public BoardMapper() {
 		this(null);
 	}
 
-	public List<ElementDto> mapPreview() {
-		final PointSet points = problem.initial().points().adjoin(problem.required().points());
-		final CurveSet curves = problem.initial().curves().adjoin(problem.required().curves());
-		return mapBoard(new Board(points, curves));
+	public ContainerDto mapPreview() {
+		return map(null, null, true);
 	}
 
-	public ConstructionDto mapConstruction(final Board construction, final KpiReport report) {
+	public ContainerDto mapConstruction(final Board construction, final KpiReport report) {
 		return map(construction, report, true);
 	}
 
-	public ConstructionDto mapKpi(final KpiReport report) {
+	public ContainerDto mapKpiReport(final KpiReport report) {
 		return map(null, report, false);
 	}
 
-	private ConstructionDto map(final Board construction, final KpiReport report, final boolean finished) {
-		final List<List<ElementDto>> list = new ArrayList<>();
-		Board board = construction;
-		while(board != null) {
-			list.add(mapBoard(board));
-			board = board.parent();
+	private ContainerDto map(final Board solution, final KpiReport report, final boolean finished) {
+		final BoardDto initial = finished ? mapBoard(problem.initial()) : null;
+		final BoardDto required = finished ? mapBoard(problem.required()) : null;
+		final List<ConstructionDto> construction = mapConstruction(solution);
+		final Map<String, java.lang.Number> kpi = mapKpi(report);
+		return new ContainerDto(initial, required, construction, kpi, finished);
+	}
+	
+	private Map<String, java.lang.Number> mapKpi(final KpiReport report) {
+		if(report == null) {
+			return null;
 		}
-		Collections.reverse(list);
-
 		final Map<String, java.lang.Number> keyValues = new LinkedHashMap<>();
 		if(report != null) {
 			report.items().forEach(i -> keyValues.put(i.name(), i.value()));
 		}
-		
-		return new ConstructionDto(list.isEmpty() ? null : list, 
-				keyValues.isEmpty() ? null : keyValues , finished);
+		return keyValues;
+	}
+	
+	private List<ConstructionDto> mapConstruction(final Board solution) {
+		if(solution == null) {
+			return null;
+		}
+		Reconstruction construction = Reconstruction.from(solution, problem.constructor().create());
+		final List<ConstructionDto> dtos = new ArrayList<>(solution.depth());
+		while(construction != null) {
+			final BoardDto constituents = mapBoard(construction.constituents());
+			final ElementDto curve = mapCurve(construction.curve());
+			final ConstructionDto dto = new ConstructionDto(constituents, curve);
+			dtos.add(dto);
+			construction = construction.next();
+		}
+		return dtos;
 	}
 
-	private List<ElementDto> mapBoard(final Board board) {
-		final List<ElementDto> boardDto = new ArrayList<>();
+	private BoardDto mapBoard(final Board board) {
+		final BoardDto boardDto = new BoardDto();
 		for(final Point point : board.points()) {
 			boardDto.add(mapPoint(point));
 		}
@@ -97,15 +89,10 @@ public class BoardMapper {
 		return boardDto;
 	}
 
-	private PointDto mapPoint(final Point point) {
-		final PointDto dto = mapInternalPoint(point);
-		final String role = pointRoleRetriever.apply(point);
-		dto.put("role", role);
-		return dto;
-	}
-
-	private PointDto mapInternalPoint(final Point point) {
-		return new PointDto(mapNumber(point.x()), mapNumber(point.y()));
+	private ElementDto mapPoint(final Point point) {
+		final String x = mapNumber(point.x());
+		final String y = mapNumber(point.y());
+		return ElementDto.point(x, y);
 	}
 	
 	private ElementDto mapCurve(final Curve curve) {
@@ -125,19 +112,17 @@ public class BoardMapper {
 		else {
 			dto = mapCircle(curve.asCircle());
 		}
-		final String role = curveRoleRetriever.apply(curve);
-		dto.put("role", role);
 		return dto;
 	}
 
-	private LineDto mapLine(final Line line) {
+	private ElementDto mapLine(final Line line) {
 		final String nx = mapNumber(line.normal().x());
 		final String ny = mapNumber(line.normal().y());
 		final String offset = mapNumber(line.offset());
-		return new LineDto(nx, ny, offset);
+		return ElementDto.line(nx, ny, offset);
 	}
 
-	private RayDto mapRay(final Ray ray) {
+	private ElementDto mapRay(final Ray ray) {
 		final Point tangent = ray.normal().orth();
 		final Point end = ray.normal().mul(ray.offset()).add(tangent.mul(ray.end()));
 		final Point direction = ray.orientation() ? tangent : tangent.negate();
@@ -145,10 +130,10 @@ public class BoardMapper {
 		final String ey = mapNumber(end.y());
 		final String dx = mapNumber(direction.x());
 		final String dy = mapNumber(direction.y());
-		return new RayDto(ex, ey, dx, dy);
+		return ElementDto.ray(ex, ey, dx, dy);
 	}
 
-	private SegmentDto mapSegment(final Segment segment) {
+	private ElementDto mapSegment(final Segment segment) {
 		final Point basePoint = segment.normal().mul(segment.offset());
 		final Point tangent = segment.normal().orth();
 		final Point from = basePoint.add(tangent.mul(segment.from()));
@@ -157,14 +142,14 @@ public class BoardMapper {
 		final String y1 = mapNumber(from.y());
 		final String x2 = mapNumber(to.x());
 		final String y2 = mapNumber(to.y());
-		return new SegmentDto(x1, y1, x2, y2);
+		return ElementDto.segment(x1, y1, x2, y2);
 	}
 
-	private CircleDto mapCircle(final Circle circle) {
+	private ElementDto mapCircle(final Circle circle) {
 		final String cx = mapNumber(circle.center().x());
 		final String cy = mapNumber(circle.center().y());
 		final String radius = mapNumber(circle.radiusSquare().root());
-		return new CircleDto(cx, cy, radius);
+		return ElementDto.circle(cx, cy, radius);
 	}
 	
 	private String mapNumber(final Number number) {

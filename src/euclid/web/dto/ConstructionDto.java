@@ -1,44 +1,30 @@
 package euclid.web.dto;
 
-import java.util.List;
-import java.util.Map;
-
 public class ConstructionDto {
 	
-	private List<List<ElementDto>> construction;
+	private BoardDto constituents;
 	
-	private Map<String, Number> kpi;
-	
-	private boolean finished;
+	private ElementDto curve;
 
-	public ConstructionDto(final List<List<ElementDto>> construction, final Map<String, Number> kpi, final boolean finished) {
-		this.construction = construction;
-		this.kpi = kpi;
-		this.finished = finished;
+	public ConstructionDto(final BoardDto constituents, final ElementDto curve) {
+		this.constituents = constituents;
+		this.curve = curve;
 	}
 
-	public List<List<ElementDto>> getConstruction() {
-		return construction;
+	public BoardDto getConstituents() {
+		return constituents;
 	}
 
-	public void setConstruction(List<List<ElementDto>> construction) {
-		this.construction = construction;
+	public void setConstituents(BoardDto constituents) {
+		this.constituents = constituents;
 	}
 
-	public Map<String, Number> getKpi() {
-		return kpi;
+	public ElementDto getCurve() {
+		return curve;
 	}
 
-	public void setKpi(Map<String, Number> kpi) {
-		this.kpi = kpi;
-	}
-
-	public boolean isFinished() {
-		return finished;
-	}
-
-	public void setFinished(boolean finished) {
-		this.finished = finished;
+	public void setCurve(ElementDto curve) {
+		this.curve = curve;
 	}
 
 }

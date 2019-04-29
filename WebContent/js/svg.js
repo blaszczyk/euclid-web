@@ -23,10 +23,10 @@ var scale = 100;
 
 function draw(update) {
   if(update) {
-	  initial = update.initial;
-	  required = update.required;
-	  construction = update.construction;
-	  step = construction ? construction.length : 0;
+    initial = update.initial;
+    required = update.required;
+    construction = update.construction;
+    step = construction ? construction.length : 0;
   }
   svg = '<svg width="'+width+'" height="'+height+'">'
   svg += board();

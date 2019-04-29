@@ -10,7 +10,7 @@ public class ContainerDto {
 	private BoardDto required;
 	
 	private List<ConstructionDto> construction;
-	
+
 	private Map<String, Number> kpi;
 	
 	private boolean finished;

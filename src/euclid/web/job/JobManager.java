@@ -30,27 +30,22 @@ public class JobManager {
 	private final Map<String, Job> jobs = new ConcurrentHashMap<>();
 
 	public String createAndStartJob(final Problem problem) {
-
 		final String jobId = String.format("%08X", problem.hashCode());
 		final Job job = createJob(problem, jobId);
 		jobs.put(jobId, job);
 		job.start();
 		return jobId;
 	}
-	
+
 	public Job job(final String jobId) {
 		return jobs.get(jobId);
 	}
-	
-	public void halt(final String jobId) {
-		job(jobId).halt();
-	}
-	
+
 	public void removeJob(final String jobId) {
 		job(jobId).halt();
 		jobs.remove(jobId);
 	}
-	
+
 	private Job createJob(final Problem problem, final String jobId) {
 		final KpiMonitor monitor = new KpiMonitor(config.getInt("kpi.interval"));
 
@@ -71,7 +66,7 @@ public class JobManager {
 		
 		return new Job(problem, engine, monitor);
 	}
-	
+
 	private int threadCount() {
 		int threadCount = config.getInt("engine.threads");
 		if(threadCount <= 0) {

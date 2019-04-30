@@ -44,18 +44,18 @@ public class SolverEndpoint extends AbstractEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response pollSolution(@PathParam("jobId") final String jobId) {
 		final Job job = jobManager.job(jobId);
-		final KpiReport kpiReport = job.kpiReport();
-
 		final ContainerDto containerDto;
 		if(job.finished()) {
+			jobManager.removeJob(jobId);
 			final List<? extends Board> solutions = job.solutions();
 			final Board solution = solutions.isEmpty() ? null : solutions.get(0);
 			final Problem problem = job.problem();
-			jobManager.removeJob(jobId);
+			final KpiReport kpiReport = job.kpiReport();
 			containerDto = new BoardMapper(problem).mapConstruction(solution, kpiReport);
 		}
 		else
 		{
+			final KpiReport kpiReport = job.kpiReport();
 			containerDto = new BoardMapper().mapKpiReport(kpiReport);
 		}
 		return ok(containerDto);
@@ -64,7 +64,7 @@ public class SolverEndpoint extends AbstractEndpoint {
 	@DELETE
 	@Path("/{jobId}")
 	public Response halt(@PathParam("jobId") final String jobId) {
-		jobManager.halt(jobId);
+		jobManager.job(jobId).halt();
 		return ok();
 	}
 

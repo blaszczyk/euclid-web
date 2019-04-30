@@ -46,7 +46,7 @@ public class Job {
 		monitor.start();
 	}
 
-	void halt() {
+	public void halt() {
 		engine.halt();
 		monitor.halt();
 	}

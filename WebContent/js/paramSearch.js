@@ -28,7 +28,7 @@ function tryNext() {
   preview();
   postJob(c => {
     if(c.construction) {
-      draw(c.construction);
+      draw(c);
       updatePSButtons();
     }
     else {
@@ -45,10 +45,10 @@ function tryNext() {
 };
 
 function currentPoint() {
-  i = numVal('imin') + current * (numVal('imax')-numVal('imin')) / numVal('ni');
+  var i = numVal('imin') + current * (numVal('imax')-numVal('imin')) / numVal('ni');
   i = i.toFixed(9).replace(/\.?0+$/,'');
-  x = val('xi').replace(/(?<!\w)i(?!\w)/g, i);
-  y = val('yi').replace(/(?<!\w)i(?!\w)/g, i);
+  var x = val('xi').replace(/(?<!\w)i(?!\w)/g, i);
+  var y = val('yi').replace(/(?<!\w)i(?!\w)/g, i);
   return ' :p('+x+','+y+')';
 };
 

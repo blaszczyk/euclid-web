@@ -28,14 +28,14 @@ function draw(update) {
     construction = update.construction;
     step = construction ? construction.length : 0;
   }
-  svg = '<svg width="'+width+'" height="'+height+'">'
+  var svg = '<svg width="'+width+'" height="'+height+'">'
   svg += board();
   svg += '</svg>';
   $('#svg').html(svg)
 };
 
 function board() {
-  svg='';
+  var svg='';
   if(!construction) {
     svg+=mapElements(initial,'green');
     svg+=mapElements(required,'red');
@@ -64,7 +64,7 @@ function board() {
 };
 
 function mapElements(elements,color) {
-  svg='';
+  var svg='';
   elements.forEach(e => svg+=mapElement(e,color));
   return svg;
 };
@@ -79,84 +79,56 @@ function point(p) {
     'cx':scaleX(p.x),
     'cy':scaleY(p.y),
     'r':'4',
-    'stroke':'black',
-    'stroke-width':1,
+    'stroke-width':0,
     'fill':p.color
   });
 };
 
 function line(l) {
-  xm = width / scale / 2;
-  ym = height / scale / 2;
-  nx=l.nx*1;
-  ny=l.ny*1;
-  o=l.offset*1;
-  nxxm = nx*xm;
-  nyym = ny*ym;
+  var px = scaleX(l.nx * l.offset);
+  var py = scaleY(l.ny * l.offset);
+  var dx = l.ny * 1;
+  var dy = l.nx * 1;
 
-  ps=[];
-  if(Math.abs(o-nyym)<=Math.abs(nxxm))
-    ps.push({x:(o-nyym)/nx, y:ym});
-  if(Math.abs(o+nyym)<=Math.abs(nxxm))
-    ps.push({x:(o+nyym)/nx, y:-ym});
-  if(Math.abs(o-nxxm)<Math.abs(nyym))
-    ps.push({x:xm, y:(o-nxxm)/ny});
-  if(Math.abs(o+nxxm)<Math.abs(nyym))
-    ps.push({x:-xm, y:(o+nxxm)/ny});
-  
+  var ps=[];
+  if(h = hit(px,py,dy/dx,0,height))
+    ps.push({x:0, y:h});
+  if(h = hit(px,py,dy/dx,width,height))
+    ps.push({x:width, y:h});
+  if(h = hit(py,px,dx/dy,0,width,true))
+    ps.push({x:h, y:0});
+  if(h = hit(py,px,dx/dy,height,width,true))
+    ps.push({x:h, y:height});
+
   if(ps.length == 2) {
-    return element('line',{
-      'x1':scaleX(ps[0].x),
-      'y1':scaleY(ps[0].y),
-      'x2':scaleX(ps[1].x),
-      'y2':scaleY(ps[1].y),
-      'stroke':l.color,
-      'stroke-width':2
-    });
+    return svgLine(ps[0].x ,ps[0].y ,ps[1].x ,ps[1].y ,l.color);
   }
   console.log('out of bounds: ' + JSON.stringify(l));
 };
 
 function ray(r) {
-  xm = width / scale / 2;
-  ym = height / scale / 2;
-  ex = r.ex*1;
-  ey = r.ey*1;
-  dx = r.dx*1;
-  dy = r.dy*1;
+  var ex = scaleX(r.ex);
+  var ey = scaleY(r.ey);
+  var dx = + r.dx;
+  var dy = - r.dy;
 
-  p=null;
-  if((+xm-ex)*dx>0 && Math.abs(ey+(+xm-ex)*dy/dx)<=ym)
-	    p={x:+xm, y:ey+(+xm-ex)*dy/dx};
-  if((-xm-ex)*dx>0 && Math.abs(ey+(-xm-ex)*dy/dx)<=ym)
-	    p={x:-xm, y:ey+(-xm-ex)*dy/dx};
-  if((+ym-ey)*dy>0 && Math.abs(ex+(+ym-ey)*dx/dy)<=xm)
-	    p={x:ex+(+ym-ey)*dx/dy, y:+ym};
-  if((-ym-ey)*dy>0 && Math.abs(ex+(-ym-ey)*dx/dy)<=xm)
-	    p={x:ex+(-ym-ey)*dx/dy, y:-ym};
-
+  var p=null;
+  if(dx < 0 && (h = hit(ex,ey,dy/dx,0,height)))
+    p={x:0, y:h};
+  if(dx > 0 && (h = hit(ex,ey,dy/dx,width,height)))
+    p={x:width, y:h};
+  if(dy < 0 && (h = hit(ey,ex,dx/dy,0,width)))
+    p={x:h, y:0};
+  if(dy > 0 && (h = hit(ey,ex,dx/dy,height,width)))
+    p={x:h, y:height};
   if(p) {
-    return element('line',{
-        'x1':scaleX(r.ex),
-        'y1':scaleY(r.ey),
-        'x2':scaleX(p.x),
-        'y2':scaleY(p.y),
-        'stroke':r.color,
-        'stroke-width':2
-      });
+    return svgLine(ex, ey, p.x, p.y, r.color);
   }
   console.log('out of bounds: ' + JSON.stringify(r));
 };
 
 function segment(s) {
-  return element('line',{
-    'x1':scaleX(s.x1),
-    'y1':scaleY(s.y1),
-    'x2':scaleX(s.x2),
-    'y2':scaleY(s.y2),
-    'stroke':s.color,
-    'stroke-width':2
-  });
+  return svgLine(scaleX(s.x1), scaleY(s.y1), scaleX(s.x2), scaleY(s.y2), s.color);
 };
 
 function circle(c) {
@@ -165,13 +137,24 @@ function circle(c) {
     'cy':scaleY(c.cy),
     'r':c.radius*scale,
     'stroke':c.color,
-    'stroke-width':2,
+    'stroke-width':1,
     'fill':'transparent'
   });
 };
 
+function svgLine(x1,y1,x2,y2,color) {
+  return element('line',{
+    'x1':x1,
+    'y1':y1,
+    'x2':x2,
+    'y2':y2,
+    'stroke':color,
+    'stroke-width':1
+  });
+};
+
 function element(name, attrs) {
-  res='<'+name;
+  var res='<'+name;
   Object.keys(attrs).forEach(k => res +=' '+k+'="'+attrs[k]+'"');
   return res+'/>';
 };
@@ -182,4 +165,12 @@ function scaleX(x) {
 
 function scaleY(y) {
   return - y * scale + height / 2;
+};
+
+function hit(p1,p2,slope,dist,max,noEdges){
+  if(isFinite(slope)) {
+    var h = p2+(dist-p1)*slope;
+    if(h>=0 && h<=max && !(noEdges && (h==0||h==max)))
+      return h;
+  }
 };

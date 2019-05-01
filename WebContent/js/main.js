@@ -17,7 +17,7 @@ function pollJob(onFinished) {
       else {
         setTimeout(() => pollJob(onFinished), 1000);
       }
-      showKpi(c.kpi);
+      updateKpi(c.kpi);
     });
   }
 };
@@ -42,11 +42,11 @@ function preview() {
 };
 
 function list(filter, callback) {
-  search = filter ? '?search='+encodeURIComponent(filter) : '';
+  var search = filter ? '?search='+encodeURIComponent(filter) : '';
   getReq('problem'+search, list => {
-    o='';
-    list.forEach( p => o+='<option value="{}">{}</option>'.replace(/{}/g, p));
-    $('#list').html(o);
+    var opts='';
+    list.forEach( p => opts+='<option value="{}">{}</option>'.replace(/{}/g, p));
+    $('#list').html(opts);
     if(callback) {
       callback();
     }
@@ -54,12 +54,12 @@ function list(filter, callback) {
 };
 
 function filter() {
-  search = val('name');
+  var search = val('name');
   list(search);
 };
 
 function load() {
-  name = val('list');
+  var name = val('list');
   getReq('problem/'+name, p => {
     Object.keys(p).forEach(k => val(k, p[k]));
     val('name', name);
@@ -67,7 +67,7 @@ function load() {
 };
 
 function save() {
-  name = val('name');
+  var name = val('name');
   putReq('problem/'+name, problem(), () => {
     list('',() => val('list', name));
     alert(name+' saved successfully!');
@@ -75,14 +75,14 @@ function save() {
 };
 
 function del() {
-  name = val('list');
+  var name = val('list');
   if(confirm('delete ' + name + ' ?')) {
     deleteReq('problem/'+name, list);
   }
 };
 
 function problem() {
-  p = {};
+  var p = {};
   $('#problem').children().children()
     .filter((i,c) => c.id)
     .map((i,c) => c.id)

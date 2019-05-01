@@ -1,3 +1,9 @@
+var width = 800;
+var height = 800;
+var scale = 100;
+var xOff = 0;
+var yOff = 0;
+
 var initial;
 var required;
 var construction;
@@ -17,21 +23,36 @@ function next() {
   }
 };
 
-var width = 800;
-var height = 800;
-var scale = 100;
-
 function draw(update) {
   if(update) {
     initial = update.initial;
     required = update.required;
     construction = update.construction;
     step = construction ? construction.length : 0;
+    scale = 100;
+    xOff = 0;
+    yOff = 0;
   }
   var svg = '<svg width="'+width+'" height="'+height+'">'
   svg += board();
   svg += '</svg>';
-  $('#svg').html(svg)
+  $('#svg').html(svg);
+  $('svg').on('wheel', rescale);
+};
+
+function rescale(jqe) {
+  var e = jqe.originalEvent;
+  var dir = e.deltaY;
+  if(dir != 0) {
+    var factor = dir > 0 ? 1.25 : 0.8;
+    var mx = unscaleX(e.offsetX);
+    var my = unscaleY(e.offsetY);
+    scale *= factor;
+    xOff = mx + (xOff - mx) / factor;
+    yOff = my + (yOff - my) / factor;
+    draw();
+    e.preventDefault();
+  }
 };
 
 function board() {
@@ -103,7 +124,6 @@ function line(l) {
   if(ps.length == 2) {
     return svgLine(ps[0].x ,ps[0].y ,ps[1].x ,ps[1].y ,l.color);
   }
-  console.log('out of bounds: ' + JSON.stringify(l));
 };
 
 function ray(r) {
@@ -124,7 +144,6 @@ function ray(r) {
   if(p) {
     return svgLine(ex, ey, p.x, p.y, r.color);
   }
-  console.log('out of bounds: ' + JSON.stringify(r));
 };
 
 function segment(s) {
@@ -160,11 +179,19 @@ function element(name, attrs) {
 };
 
 function scaleX(x) {
-  return x * scale + width / 2;
+  return (x-xOff) * scale + width/2;
 };
 
 function scaleY(y) {
-  return - y * scale + height / 2;
+  return -(y-yOff) * scale + height/2;
+};
+
+function unscaleX(x) {
+  return (x - width/2) / scale + xOff;
+};
+
+function unscaleY(y) {
+  return -(y - height/2) / scale + yOff;
 };
 
 function hit(p1,p2,slope,dist,max,noEdges){

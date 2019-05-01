@@ -108,42 +108,18 @@ function point(p) {
 function line(l) {
   var px = scaleX(l.nx * l.offset);
   var py = scaleY(l.ny * l.offset);
-  var dx = l.ny * 1;
-  var dy = l.nx * 1;
 
-  var ps=[];
-  if(h = hit(px,py,dy/dx,0,height))
-    ps.push({x:0, y:h});
-  if(h = hit(px,py,dy/dx,width,height))
-    ps.push({x:width, y:h});
-  if(h = hit(py,px,dx/dy,0,width,true))
-    ps.push({x:h, y:0});
-  if(h = hit(py,px,dx/dy,height,width,true))
-    ps.push({x:h, y:height});
-
-  if(ps.length == 2) {
-    return svgLine(ps[0].x ,ps[0].y ,ps[1].x ,ps[1].y ,l.color);
-  }
+  var p1 = hitAny(px, py, +l.ny, +l.nx);
+  var p2 = hitAny(px, py, -l.ny, -l.nx);
+  return p1&&p2 ? svgLine(p1.x ,p1.y ,p2.x ,p2.y ,l.color) : '';
 };
 
 function ray(r) {
   var ex = scaleX(r.ex);
   var ey = scaleY(r.ey);
-  var dx = + r.dx;
-  var dy = - r.dy;
 
-  var p=null;
-  if(dx < 0 && (h = hit(ex,ey,dy/dx,0,height)))
-    p={x:0, y:h};
-  if(dx > 0 && (h = hit(ex,ey,dy/dx,width,height)))
-    p={x:width, y:h};
-  if(dy < 0 && (h = hit(ey,ex,dx/dy,0,width)))
-    p={x:h, y:0};
-  if(dy > 0 && (h = hit(ey,ex,dx/dy,height,width)))
-    p={x:h, y:height};
-  if(p) {
-    return svgLine(ex, ey, p.x, p.y, r.color);
-  }
+  var p = hitAny(ex, ey, +r.dx, -r.dy);
+  return p ? svgLine(ex, ey, p.x, p.y, r.color) : '';
 };
 
 function segment(s) {
@@ -194,10 +170,21 @@ function unscaleY(y) {
   return -(y - height/2) / scale + yOff;
 };
 
-function hit(p1,p2,slope,dist,max,noEdges){
+function hitAny(ex,ey,dx,dy) {
+  if(dx<0 && (h = hit(ex,ey,dy/dx,0,height)))
+    return {x:0, y:h};
+  if(dx>0 && (h = hit(ex,ey,dy/dx,width,height)))
+    return {x:width, y:h};
+  if(dy<0 && (h = hit(ey,ex,dx/dy,0,width)))
+    return {x:h, y:0};
+  if(dy>0 && (h = hit(ey,ex,dx/dy,height,width)))
+    return {x:h, y:height};
+};
+
+function hit(p1,p2,slope,dist,max){
   if(isFinite(slope)) {
     var h = p2+(dist-p1)*slope;
-    if(h>=0 && h<=max && !(noEdges && (h==0||h==max)))
+    if(h>=0 && h<=max)
       return h;
   }
 };

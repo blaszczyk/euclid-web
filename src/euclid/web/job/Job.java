@@ -12,13 +12,13 @@ public class Job {
 	
 	private final Problem problem;
 	
-	private final SearchEngine<? extends Board> engine;
+	private final SearchEngine<Board> engine;
 	
 	private final KpiMonitor monitor;
 	
 	private KpiReport lastKpiReport;
 
-	Job(Problem problem, SearchEngine<? extends Board> engine, KpiMonitor monitor) {
+	Job(Problem problem, SearchEngine<Board> engine, KpiMonitor monitor) {
 		this.problem = problem;
 		this.engine = engine;
 		this.monitor = monitor;
@@ -29,7 +29,7 @@ public class Job {
 		return problem;
 	}
 
-	public List<? extends Board> solutions() {
+	public List<Board> solutions() {
 		return engine.solutions();
 	}
 

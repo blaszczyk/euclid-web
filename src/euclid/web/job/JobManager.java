@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import euclid.algorithm.Algorithm;
+import euclid.algorithm.AlgorithmFactory;
 import euclid.engine.EngineParameters;
 import euclid.engine.SearchEngine;
 import euclid.kpi.KpiCsvWriter;
@@ -49,10 +50,10 @@ public class JobManager {
 	private Job createJob(final Problem problem, final String jobId) {
 		final KpiMonitor monitor = new KpiMonitor(config.getInt("kpi.interval"));
 
-		final Algorithm<? extends Board> algorithm = problem.algorithm().create(problem);
+		final Algorithm<Board> algorithm = AlgorithmFactory.create(problem);
 		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), problem.shuffle(),
 				threadCount(),config.getInt("engine.bunchsize"), config.getInt("engine.maxqueuesize"));
-		final SearchEngine<? extends Board> engine = new SearchEngine<>(algorithm, parameters);
+		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters);
 
 		engine.kpiReporters().forEach(monitor::addReporter);
 		monitor.addReporter(new SystemKpi());

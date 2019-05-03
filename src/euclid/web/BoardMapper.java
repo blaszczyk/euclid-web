@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import euclid.algebra.Algebra;
 import euclid.algorithm.Reconstruction;
 import euclid.geometry.Circle;
 import euclid.geometry.Curve;
@@ -123,8 +124,8 @@ public class BoardMapper {
 	}
 
 	private ElementDto mapRay(final Ray ray) {
+		final Point end = Algebra.endPoint(ray);
 		final Point tangent = ray.normal().orth();
-		final Point end = ray.normal().mul(ray.offset()).add(tangent.mul(ray.end()));
 		final Point direction = ray.orientation() ? tangent : tangent.negate();
 		final String ex = mapNumber(end.x());
 		final String ey = mapNumber(end.y());
@@ -134,14 +135,11 @@ public class BoardMapper {
 	}
 
 	private ElementDto mapSegment(final Segment segment) {
-		final Point basePoint = segment.normal().mul(segment.offset());
-		final Point tangent = segment.normal().orth();
-		final Point from = basePoint.add(tangent.mul(segment.from()));
-		final Point to = basePoint.add(tangent.mul(segment.to()));
-		final String x1 = mapNumber(from.x());
-		final String y1 = mapNumber(from.y());
-		final String x2 = mapNumber(to.x());
-		final String y2 = mapNumber(to.y());
+		final List<Point> ends = Algebra.endPoints(segment);
+		final String x1 = mapNumber(ends.get(0).x());
+		final String y1 = mapNumber(ends.get(0).y());
+		final String x2 = mapNumber(ends.get(1).x());
+		final String y2 = mapNumber(ends.get(1).y());
 		return ElementDto.segment(x1, y1, x2, y2);
 	}
 

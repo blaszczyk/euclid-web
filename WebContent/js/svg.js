@@ -6,6 +6,7 @@ var yOff = 0;
 
 var initial;
 var required;
+var assist;
 var construction;
 var step=0;
 
@@ -27,6 +28,7 @@ function draw(update) {
   if(update) {
     initial = update.initial;
     required = update.required;
+    assist = update.assist;
     construction = update.construction;
     step = construction ? construction.length : 0;
     scale = 100;
@@ -60,6 +62,7 @@ function board() {
   if(!construction) {
     svg+=mapElements(initial,'green');
     svg+=mapElements(required,'red');
+    svg+=mapElements(assist,'blue');
   }
   else if(step < 0) {
     svg+=mapElements(initial,'lightgray');

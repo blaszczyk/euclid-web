@@ -47,9 +47,10 @@ public class BoardMapper {
 	private ContainerDto map(final Board solution, final KpiReport report, final boolean finished) {
 		final BoardDto initial = finished ? mapBoard(problem.initial()) : null;
 		final BoardDto required = finished ? mapBoard(problem.required()) : null;
+		final BoardDto assist = finished ? mapBoard(problem.assist()) : null;
 		final List<ConstructionDto> construction = mapConstruction(solution);
 		final Map<String, java.lang.Number> kpi = mapKpi(report);
-		return new ContainerDto(initial, required, construction, kpi, finished);
+		return new ContainerDto(initial, required, assist, construction, kpi, finished);
 	}
 	
 	private Map<String, java.lang.Number> mapKpi(final KpiReport report) {

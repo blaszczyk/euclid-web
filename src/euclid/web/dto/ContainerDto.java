@@ -9,16 +9,20 @@ public class ContainerDto {
 	
 	private BoardDto required;
 	
+	private BoardDto assist;
+	
 	private List<ConstructionDto> construction;
 
 	private Map<String, Number> kpi;
 	
 	private boolean finished;
 
-	public ContainerDto(final BoardDto initial, final BoardDto required, final List<ConstructionDto> construction,
-			final Map<String, Number> kpi, final boolean finished) {
+	public ContainerDto(final BoardDto initial, final BoardDto required, final BoardDto assist, 
+			final List<ConstructionDto> construction, final Map<String, Number> kpi, 
+			final boolean finished) {
 		this.initial = initial;
 		this.required = required;
+		this.assist = assist;
 		this.construction = construction;
 		this.kpi = kpi;
 		this.finished = finished;
@@ -38,6 +42,14 @@ public class ContainerDto {
 
 	public void setRequired(BoardDto required) {
 		this.required = required;
+	}
+
+	public BoardDto getAssist() {
+		return assist;
+	}
+
+	public void setAssist(BoardDto assist) {
+		this.assist = assist;
 	}
 
 	public List<ConstructionDto> getConstruction() {

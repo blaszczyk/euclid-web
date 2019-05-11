@@ -60,9 +60,9 @@ function rescale(jqe) {
 function board() {
   var svg='';
   if(!construction) {
+    svg+=mapElements(assist,'blue');
     svg+=mapElements(initial,'green');
     svg+=mapElements(required,'red');
-    svg+=mapElements(assist,'blue');
   }
   else if(step < 0) {
     svg+=mapElements(initial,'lightgray');

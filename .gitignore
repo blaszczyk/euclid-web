@@ -6,6 +6,7 @@
 *.war
 *.ear
 lib/
+WebContent/js/jquery.min.js
 
 src_output/
 sql_output/

@@ -1,6 +1,10 @@
 var paramSearchOn=false;
 var current;
-var initBackup;
+var varsBackup;
+
+var imin;
+var imax;
+var ni;
 
 function toggleParamSearch() {
   paramSearchOn = !paramSearchOn;
@@ -8,8 +12,11 @@ function toggleParamSearch() {
 };
 
 function start() {
-  current=0;
-  initBackup = val('initial');
+  imin = numVal('imin');
+  imax = numVal('imax');
+  ni = numVal('ni');
+  current = 0;
+  varsBackup = val('variables').replace(/^i\=[\d\.]+\s+/,'');
   tryNext();
 };
 
@@ -18,12 +25,12 @@ function skip() {
 };
 
 function abort() {
-  current = numVal('ni');
+  current = ni;
   halt();
 };
 
 function tryNext() {
-  val('initial', initBackup + currentPoint());
+  val('variables', currentI() + varsBackup);
   updatePSButtons(true);
   preview();
   postJob(c => {
@@ -33,8 +40,7 @@ function tryNext() {
     }
     else {
       current++;
-      if(current > numVal('ni')) {
-        val('initial', initBackup);
+      if(current > ni) {
         updatePSButtons();
       }
       else {
@@ -44,12 +50,10 @@ function tryNext() {
   });
 };
 
-function currentPoint() {
-  var i = numVal('imin') + current * (numVal('imax')-numVal('imin')) / numVal('ni');
+function currentI() {
+  var i = imin + (imax - imin) * current / ni;
   i = i.toFixed(9).replace(/\.?0+$/,'');
-  var x = val('xi').replace(/(?<!\w)i(?!\w)/g, i);
-  var y = val('yi').replace(/(?<!\w)i(?!\w)/g, i);
-  return ' :p('+x+','+y+')';
+  return 'i='+i+'\r\n';
 };
 
 function updatePSButtons(running) {

@@ -3,7 +3,6 @@ package euclid.web.job;
 import java.util.List;
 
 import euclid.engine.SearchEngine;
-import euclid.kpi.KpiMonitor;
 import euclid.kpi.KpiReport;
 import euclid.sets.Board;
 import euclid.problem.Problem;
@@ -14,15 +13,11 @@ public class Job {
 	
 	private final SearchEngine<Board> engine;
 	
-	private final KpiMonitor monitor;
-	
 	private KpiReport lastKpiReport;
 
-	Job(Problem problem, SearchEngine<Board> engine, KpiMonitor monitor) {
+	Job(final Problem problem, final SearchEngine<Board> engine) {
 		this.problem = problem;
 		this.engine = engine;
-		this.monitor = monitor;
-		monitor.addConsumer(this::consumeKpi);
 	}
 
 	public Problem problem() {
@@ -43,15 +38,13 @@ public class Job {
 
 	void start() {
 		engine.start();
-		monitor.start();
 	}
 
 	public void halt() {
 		engine.halt();
-		monitor.halt();
 	}
 	
-	private void consumeKpi(final KpiReport report) {
+	public void consumeKpi(final KpiReport report) {
 		lastKpiReport = report;
 	}
 	

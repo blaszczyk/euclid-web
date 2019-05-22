@@ -52,10 +52,10 @@ public class JobManager {
 
 		final Algorithm<Board> algorithm = AlgorithmFactory.create(problem);
 		final EngineParameters parameters = new EngineParameters(jobId, 1, problem.depthFirst(), problem.shuffle(),
-				threadCount(),config.getInt("engine.bunchsize"), config.getInt("engine.maxqueuesize"));
-		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters);
+				threadCount(), config.getInt("engine.bunchsize"), config.getInt("engine.maxqueuesize"));
+		final SearchEngine<Board> engine = new SearchEngine<>(algorithm, parameters, monitor);
+		final Job job = new Job(problem, engine);
 
-		engine.kpiReporters().forEach(monitor::addReporter);
 		monitor.addReporter(new SystemKpi());
 
 		if(config.getBoolean("kpi.csv")) {
@@ -64,8 +64,8 @@ public class JobManager {
 		if(config.getBoolean("kpi.out")) {
 			monitor.addConsumer(new KpiStdoutLogger());
 		}
-		
-		return new Job(problem, engine, monitor);
+		monitor.addConsumer(job::consumeKpi);
+		return job;
 	}
 
 	private int threadCount() {

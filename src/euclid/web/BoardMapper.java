@@ -21,7 +21,7 @@ import euclid.problem.Problem;
 import euclid.web.dto.*;
 
 public class BoardMapper {
-	
+
 	private final Problem problem;
 
 	public BoardMapper(final Problem problem) {
@@ -96,25 +96,23 @@ public class BoardMapper {
 		final String y = mapNumber(point.y());
 		return ElementDto.point(x, y);
 	}
-	
+
 	private ElementDto mapCurve(final Curve curve) {
-		final ElementDto dto;
 		if(curve.isLine()) {
 			final Line line = curve.asLine();
 			if(line.isRay()) {
-				dto = mapRay(line.asRay());
+				return mapRay(line.asRay());
 			}
 			else if(line.isSegment()) {
-				dto = mapSegment(line.asSegment());
+				return mapSegment(line.asSegment());
 			}
 			else {
-				dto = mapLine(curve.asLine());
+				return mapLine(curve.asLine());
 			}
 		}
 		else {
-			dto = mapCircle(curve.asCircle());
+			return mapCircle(curve.asCircle());
 		}
-		return dto;
 	}
 
 	private ElementDto mapLine(final Line line) {
@@ -150,8 +148,8 @@ public class BoardMapper {
 		final String radius = mapNumber(circle.radiusSquare().root());
 		return ElementDto.circle(cx, cy, radius);
 	}
-	
+
 	private String mapNumber(final Number number) {
-		return new DecimalFormat("#.######").format(number.doubleValue());
+		return new DecimalFormat("#.#########").format(number.doubleValue());
 	}
 }

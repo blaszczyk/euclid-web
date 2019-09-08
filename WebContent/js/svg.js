@@ -65,14 +65,14 @@ function board() {
     svg+=mapElements(required,'red');
   }
   else if(step < 0) {
-    svg+=mapElements(initial,'lightgray');
+    svg+=mapElements(initial,'green');
   }
   else if(step < construction.length) {
-    svg+=mapElements(initial,'lightgray');
     for(i=0; i<step; i++) {
       svg+=mapElement(construction[i].curve,'lightgray');
       svg+=mapElements(construction[i].constituents,'lightgray');
     }
+    svg+=mapElements(initial,'green');
     svg+=mapElement(construction[step].curve,'black');
     svg+=mapElements(construction[step].constituents,'blue');
   }
